@@ -9,9 +9,16 @@ import {
   HelpCircle,
   Bell,
   Settings,
-  LogOut
+  LogOut,
+  MapPin,
+  Building2,
+  UserCheck,
+  UserPlus,
+  HeartHandshake,
+  Eye
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 import {
   Sidebar,
@@ -26,14 +33,72 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const mainItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Fund Allocation", url: "/fund-allocation", icon: DollarSign },
-  { title: "Performance Analytics", url: "/performance", icon: BarChart3 },
-  { title: "User Management", url: "/users", icon: Users },
-  { title: "System Audit Logs", url: "/audit", icon: Shield },
-  { title: "Reports & Analytics", url: "/reports", icon: FileText },
-];
+// Navigation items based on user roles
+const getNavItems = (role: string) => {
+  switch (role) {
+    case 'admin':
+      return [
+        { title: "Dashboard", url: "/", icon: LayoutDashboard },
+        { title: "Fund Allocation", url: "/fund-allocation", icon: DollarSign },
+        { title: "Performance Analytics", url: "/performance", icon: BarChart3 },
+        { title: "User Management", url: "/users", icon: Users },
+        { title: "System Audit Logs", url: "/audit", icon: Shield },
+        { title: "Reports & Analytics", url: "/reports", icon: FileText },
+      ];
+    case 'district':
+      return [
+        { title: "District Overview", url: "/", icon: MapPin },
+        { title: "Block Performance", url: "/performance", icon: BarChart3 },
+        { title: "Fund Utilization", url: "/fund-allocation", icon: DollarSign },
+        { title: "NRC Monitoring", url: "/nrc", icon: HeartHandshake },
+        { title: "Reports", url: "/reports", icon: FileText },
+      ];
+    case 'block':
+      return [
+        { title: "Block Dashboard", url: "/", icon: Building2 },
+        { title: "Supervisor Monitoring", url: "/supervisors", icon: UserCheck },
+        { title: "Fund Requests", url: "/fund-allocation", icon: DollarSign },
+        { title: "Resource Distribution", url: "/resources", icon: Shield },
+        { title: "Reports", url: "/reports", icon: FileText },
+      ];
+    case 'supervisor':
+      return [
+        { title: "Supervisor Dashboard", url: "/", icon: UserCheck },
+        { title: "Child Validation", url: "/validation", icon: Users },
+        { title: "Teacher Performance", url: "/teachers", icon: UserPlus },
+        { title: "NRC Referrals", url: "/referrals", icon: HeartHandshake },
+        { title: "Follow-ups", url: "/followups", icon: BarChart3 },
+      ];
+    case 'teacher':
+      return [
+        { title: "Teacher Dashboard", url: "/", icon: UserPlus },
+        { title: "Child Health Entry", url: "/entry", icon: Users },
+        { title: "Progress Monitoring", url: "/progress", icon: BarChart3 },
+        { title: "Nutrition Kits", url: "/kits", icon: Shield },
+        { title: "Parent Communication", url: "/communication", icon: FileText },
+      ];
+    case 'nrc':
+      return [
+        { title: "NRC Dashboard", url: "/", icon: HeartHandshake },
+        { title: "Admissions", url: "/admissions", icon: Users },
+        { title: "Treatment Plans", url: "/treatment", icon: FileText },
+        { title: "Progress Tracking", url: "/progress", icon: BarChart3 },
+        { title: "Resource Requests", url: "/resources", icon: Shield },
+      ];
+    case 'public':
+      return [
+        { title: "Public Dashboard", url: "/", icon: Eye },
+        { title: "Fund Transparency", url: "/funds", icon: DollarSign },
+        { title: "Health Statistics", url: "/statistics", icon: BarChart3 },
+        { title: "Reports", url: "/reports", icon: FileText },
+        { title: "Complaints", url: "/complaints", icon: Bell },
+      ];
+    default:
+      return [
+        { title: "Dashboard", url: "/", icon: LayoutDashboard },
+      ];
+  }
+};
 
 const systemItems = [
   { title: "Alerts", url: "/alerts", icon: Bell },
@@ -43,6 +108,7 @@ const systemItems = [
 
 export function AppSidebar() {
   const { state } = useSidebar();
+  const { user, logout } = useAuth();
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -52,6 +118,8 @@ export function AppSidebar() {
     isActive 
       ? "bg-primary/10 text-primary font-semibold border-r-2 border-primary" 
       : "hover:bg-muted/50 govt-transition";
+
+  const mainItems = getNavItems(user?.role || 'admin');
 
   return (
     <Sidebar className={isCollapsed ? "w-16" : "w-72"} collapsible="icon">
@@ -73,7 +141,13 @@ export function AppSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4 py-2">
-            Main Navigation
+            {user?.role === 'admin' ? 'Admin Navigation' : 
+             user?.role === 'district' ? 'District Management' :
+             user?.role === 'block' ? 'Block Operations' :
+             user?.role === 'supervisor' ? 'Supervisor Tools' :
+             user?.role === 'teacher' ? 'Teacher Portal' :
+             user?.role === 'nrc' ? 'NRC Management' :
+             user?.role === 'public' ? 'Public Access' : 'Main Navigation'}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -119,12 +193,16 @@ export function AppSidebar() {
             </div>
             {!isCollapsed && (
               <div className="flex-1">
-                <p className="text-sm font-medium">Admin User</p>
-                <p className="text-xs text-muted-foreground">State Authority</p>
+                <p className="text-sm font-medium">{user?.name || 'User'}</p>
+                <p className="text-xs text-muted-foreground">{user?.department || 'Department'}</p>
               </div>
             )}
             {!isCollapsed && (
-              <button className="p-1 hover:bg-muted rounded govt-transition">
+              <button 
+                onClick={logout}
+                className="p-1 hover:bg-muted rounded govt-transition"
+                title="Logout"
+              >
                 <LogOut className="w-4 h-4 text-muted-foreground" />
               </button>
             )}

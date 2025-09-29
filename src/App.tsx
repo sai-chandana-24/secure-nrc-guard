@@ -6,12 +6,18 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LoginPage } from "@/components/auth/LoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import DistrictDashboard from "./pages/DistrictDashboard";
+import BlockDashboard from "./pages/BlockDashboard";
+import SupervisorDashboard from "./pages/SupervisorDashboard";
+import TeacherDashboard from "./pages/TeacherDashboard";
+import NRCDashboard from "./pages/NRCDashboard";
+import PublicDashboard from "./pages/PublicDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 function AppRoutes() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
 
   if (isLoading) {
     return (
@@ -28,17 +34,39 @@ function AppRoutes() {
     return <LoginPage />;
   }
 
+  // Route based on user role
+  const getDashboardComponent = () => {
+    switch (user?.role) {
+      case 'admin':
+        return <AdminDashboard />;
+      case 'district':
+        return <DistrictDashboard />;
+      case 'block':
+        return <BlockDashboard />;
+      case 'supervisor':
+        return <SupervisorDashboard />;
+      case 'teacher':
+        return <TeacherDashboard />;
+      case 'nrc':
+        return <NRCDashboard />;
+      case 'public':
+        return <PublicDashboard />;
+      default:
+        return <AdminDashboard />;
+    }
+  };
+
   return (
     <Routes>
-      <Route path="/" element={<AdminDashboard />} />
-      <Route path="/fund-allocation" element={<AdminDashboard />} />
-      <Route path="/performance" element={<AdminDashboard />} />
-      <Route path="/users" element={<AdminDashboard />} />
-      <Route path="/audit" element={<AdminDashboard />} />
-      <Route path="/reports" element={<AdminDashboard />} />
-      <Route path="/alerts" element={<AdminDashboard />} />
-      <Route path="/support" element={<AdminDashboard />} />
-      <Route path="/settings" element={<AdminDashboard />} />
+      <Route path="/" element={getDashboardComponent()} />
+      <Route path="/fund-allocation" element={getDashboardComponent()} />
+      <Route path="/performance" element={getDashboardComponent()} />
+      <Route path="/users" element={getDashboardComponent()} />
+      <Route path="/audit" element={getDashboardComponent()} />
+      <Route path="/reports" element={getDashboardComponent()} />
+      <Route path="/alerts" element={getDashboardComponent()} />
+      <Route path="/support" element={getDashboardComponent()} />
+      <Route path="/settings" element={getDashboardComponent()} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
