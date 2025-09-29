@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LoginPage } from "@/components/auth/LoginPage";
 import { LandingPage } from "@/components/LandingPage";
+import SettingsPage from "./pages/SettingsPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import DistrictDashboard from "./pages/DistrictDashboard";
 import BlockDashboard from "./pages/BlockDashboard";
@@ -73,7 +74,7 @@ function AppRoutes() {
       <Route path="/reports" element={getDashboardComponent()} />
       <Route path="/alerts" element={getDashboardComponent()} />
       <Route path="/support" element={getDashboardComponent()} />
-      <Route path="/settings" element={getDashboardComponent()} />
+      <Route path="/settings" element={<SettingsPage />} />
       {/* Additional navigation routes */}
       <Route path="/nrc" element={getDashboardComponent()} />
       <Route path="/supervisors" element={getDashboardComponent()} />

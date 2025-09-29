@@ -27,13 +27,19 @@ export function UserProfile() {
   const getRoleBadge = (role: string) => {
     switch (role) {
       case 'admin':
-        return <Badge variant="destructive" className="bg-tertiary">State Administrator</Badge>;
+        return <Badge className="bg-red-600 text-white">State Administrator</Badge>;
       case 'district':
-        return <Badge variant="default">District Officer</Badge>;
+        return <Badge className="bg-blue-600 text-white">District Officer</Badge>;
       case 'block':
-        return <Badge variant="secondary">Block Officer</Badge>;
-      case 'ngo':
-        return <Badge variant="outline">NGO Partner</Badge>;
+        return <Badge className="bg-green-600 text-white">Block Officer</Badge>;
+      case 'supervisor':
+        return <Badge className="bg-purple-600 text-white">Supervisor</Badge>;
+      case 'teacher':
+        return <Badge className="bg-orange-600 text-white">Anganwadi Teacher</Badge>;
+      case 'nrc':
+        return <Badge className="bg-teal-600 text-white">NRC Medical Officer</Badge>;
+      case 'public':
+        return <Badge className="bg-gray-600 text-white">Public Access</Badge>;
       default:
         return <Badge variant="outline">{role}</Badge>;
     }
