@@ -23,7 +23,16 @@ import {
   Smartphone,
   BarChart,
   CheckCircle,
-  Star
+  Star,
+  Building2,
+  UserCheck,
+  HeartHandshake,
+  Eye,
+  ExternalLink,
+  Download,
+  Search,
+  Bell,
+  Menu
 } from 'lucide-react';
 import chhattishgarhLogo from '@/assets/chhattisgarh-logo.png';
 import indiaEmblem from '@/assets/india-emblem.png';
@@ -66,7 +75,19 @@ const translations = {
     transparency: "Transparency & Accountability",
     innovation: "Digital Innovation",
     achievements: "Key Achievements",
-    testimonials: "Success Stories"
+    testimonials: "Success Stories",
+    adminPortal: "State Administration",
+    districtPortal: "District Management",
+    blockPortal: "Block Operations",
+    supervisorPortal: "Field Supervision",
+    teacherPortal: "Anganwadi Centers",
+    nrcPortal: "NRC Medical Centers",
+    publicPortal: "Public Transparency",
+    quickAccess: "Quick Access Portals",
+    about: "About",
+    services: "Services",
+    reports_nav: "Reports",
+    help: "Help"
   },
   hi: {
     title: "छत्तीसगढ़ पोषणीय पुनर्वास केंद्र",
@@ -98,7 +119,19 @@ const translations = {
     transparency: "पारदर्शिता और जवाबदेही",
     innovation: "डिजिटल नवाचार",
     achievements: "मुख्य उपलब्धियां",
-    testimonials: "सफलता की कहानियां"
+    testimonials: "सफलता की कहानियां",
+    adminPortal: "राज्य प्रशासन",
+    districtPortal: "जिला प्रबंधन",
+    blockPortal: "ब्लॉक संचालन",
+    supervisorPortal: "क्षेत्रीय पर्यवेक्षण",
+    teacherPortal: "आंगनवाड़ी केंद्र",
+    nrcPortal: "एनआरसी चिकित्सा केंद्र",
+    publicPortal: "सार्वजनिक पारदर्शिता",
+    quickAccess: "त्वरित पहुंच पोर्टल",
+    about: "के बारे में",
+    services: "सेवाएं",
+    reports_nav: "रिपोर्ट",
+    help: "सहायता"
   }
 };
 
@@ -127,18 +160,63 @@ const stats = [
   { label: 'successRate', value: '89.5%', icon: Award, color: 'text-orange-600', bg: 'bg-orange-50' }
 ];
 
+const portals = [
+  { 
+    key: 'adminPortal', 
+    icon: Shield, 
+    color: 'bg-red-600 hover:bg-red-700',
+    role: 'admin',
+    email: 'admin@chhattisgarh.gov.in'
+  },
+  { 
+    key: 'districtPortal', 
+    icon: MapPin, 
+    color: 'bg-blue-600 hover:bg-blue-700',
+    role: 'district',
+    email: 'district@chhattisgarh.gov.in'
+  },
+  { 
+    key: 'blockPortal', 
+    icon: Building2, 
+    color: 'bg-green-600 hover:bg-green-700',
+    role: 'block',
+    email: 'block@chhattisgarh.gov.in'
+  },
+  { 
+    key: 'supervisorPortal', 
+    icon: UserCheck, 
+    color: 'bg-purple-600 hover:bg-purple-700',
+    role: 'supervisor',
+    email: 'supervisor@chhattisgarh.gov.in'
+  },
+  { 
+    key: 'teacherPortal', 
+    icon: Users, 
+    color: 'bg-orange-600 hover:bg-orange-700',
+    role: 'teacher',
+    email: 'teacher@chhattisgarh.gov.in'
+  },
+  { 
+    key: 'nrcPortal', 
+    icon: HeartHandshake, 
+    color: 'bg-teal-600 hover:bg-teal-700',
+    role: 'nrc',
+    email: 'nrc@chhattisgarh.gov.in'
+  },
+  { 
+    key: 'publicPortal', 
+    icon: Eye, 
+    color: 'bg-gray-600 hover:bg-gray-700',
+    role: 'public',
+    email: 'public@example.com'
+  }
+];
+
 const features = [
   { key: 'blockchain', icon: Shield, color: 'text-indigo-600', bg: 'bg-indigo-50' },
   { key: 'realtime', icon: Activity, color: 'text-green-600', bg: 'bg-green-50' },
   { key: 'multilevel', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
   { key: 'reports', icon: BookOpen, color: 'text-purple-600', bg: 'bg-purple-50' }
-];
-
-const techFeatures = [
-  { icon: Database, title: "Advanced Analytics", desc: "ML-powered insights for policy decisions" },
-  { icon: Lock, title: "Enterprise Security", desc: "Bank-grade encryption and compliance" },
-  { icon: Smartphone, title: "Mobile-First Design", desc: "Optimized for field workers and officials" },
-  { icon: Zap, title: "Real-time Updates", desc: "Instant notifications and live data sync" }
 ];
 
 const achievements = [
@@ -148,25 +226,11 @@ const achievements = [
   { metric: "24/7", label: "System Uptime", icon: Activity }
 ];
 
-const announcements = [
-  {
-    en: "New AI-powered early warning system for severe malnutrition launched across all districts",
-    hi: "सभी जिलों में गंभीर कुपोषण के लिए नया एआई-संचालित प्रारंभिक चेतावनी प्रणाली शुरू",
-    date: "15 Dec 2024",
-    priority: "high"
-  },
-  {
-    en: "Blockchain-based fund allocation system successfully processes ₹50 crore in transparent transactions",
-    hi: "ब्लॉकचेन-आधारित फंड आवंटन प्रणाली सफलतापूर्वक ₹50 करोड़ के पारदर्शी लेनदेन को संसाधित करती है",
-    date: "12 Dec 2024",
-    priority: "medium"
-  },
-  {
-    en: "Mobile app for Anganwadi workers reaches 10,000+ downloads with 4.8-star rating",
-    hi: "आंगनवाड़ी कार्यकर्ताओं के लिए मोबाइल ऐप 4.8-स्टार रेटिंग के साथ 10,000+ डाउनलोड तक पहुंच गया",
-    date: "10 Dec 2024",
-    priority: "low"
-  }
+const quickLinks = [
+  { title: "Download User Manual", icon: Download, href: "#" },
+  { title: "System Status", icon: Activity, href: "#" },
+  { title: "Help & Support", icon: Phone, href: "#" },
+  { title: "Report an Issue", icon: Bell, href: "#" }
 ];
 
 function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
@@ -176,11 +240,38 @@ function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
     window.location.href = '/login';
   };
 
+  const handlePortalAccess = (email: string) => {
+    // Pre-fill login with the role email for quick access
+    window.location.href = `/login?email=${encodeURIComponent(email)}`;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      {/* Enhanced Header */}
-      <header className="bg-white/95 backdrop-blur-sm shadow-lg border-b-4 border-gradient-to-r from-orange-500 to-green-500 sticky top-0 z-50">
+      {/* Professional Government Header */}
+      <header className="bg-white shadow-lg border-b-4 border-gradient-to-r from-orange-500 to-green-500 sticky top-0 z-50">
         <div className="container mx-auto px-4">
+          {/* Top Bar */}
+          <div className="flex items-center justify-between py-2 border-b border-gray-200">
+            <div className="flex items-center gap-4 text-sm text-gray-600">
+              <span>Last Updated: {new Date().toLocaleDateString('en-IN')}</span>
+              <span>•</span>
+              <span>Screen Reader Access</span>
+              <span>•</span>
+              <span>Skip to Main Content</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm">
+                <Search className="w-4 h-4 mr-2" />
+                Search
+              </Button>
+              <Button variant="ghost" size="sm">
+                <Globe className="w-4 h-4 mr-2" />
+                Site Map
+              </Button>
+            </div>
+          </div>
+
+          {/* Main Header */}
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-3">
@@ -224,11 +315,46 @@ function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
               </Button>
             </div>
           </div>
+
+          {/* Navigation Menu */}
+          <nav className="flex items-center justify-between py-3 border-t border-gray-200">
+            <div className="flex items-center gap-8">
+              <a href="#home" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                Home
+              </a>
+              <a href="#about" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                {t('about')}
+              </a>
+              <a href="#services" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                {t('services')}
+              </a>
+              <a href="#portals" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                {t('quickAccess')}
+              </a>
+              <a href="#reports" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                {t('reports_nav')}
+              </a>
+              <a href="#contact" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                {t('contact')}
+              </a>
+              <a href="#help" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                {t('help')}
+              </a>
+            </div>
+            <div className="flex items-center gap-4">
+              {quickLinks.map((link, index) => (
+                <Button key={index} variant="ghost" size="sm" className="gap-2">
+                  <link.icon className="w-4 h-4" />
+                  {link.title}
+                </Button>
+              ))}
+            </div>
+          </nav>
         </div>
       </header>
 
-      {/* Enhanced Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-blue-900 via-purple-800 to-indigo-900 text-white overflow-hidden">
+      {/* Hero Banner Section */}
+      <section id="home" className="relative py-16 bg-gradient-to-br from-blue-900 via-purple-800 to-indigo-900 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/30 to-purple-600/30"></div>
         <div className="relative container mx-auto px-4 text-center">
@@ -237,13 +363,14 @@ function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
               <Star className="w-4 h-4 mr-2" />
               Award-Winning Digital Platform
             </Badge>
-            <h1 className="text-6xl font-bold mb-6 leading-tight bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
               {t('welcomeHeading')}
             </h1>
             <p className="text-xl mb-8 text-blue-100 max-w-3xl mx-auto leading-relaxed">
               {t('welcomeDesc')}
             </p>
-            <div className="flex items-center justify-center gap-6 flex-wrap">
+            
+            <div className="flex items-center justify-center gap-6 flex-wrap mb-8">
               <img src={digitalIndiaLogo} alt="Digital India" className="h-16 opacity-90 drop-shadow-lg" />
               <Badge className="bg-white/20 text-white border-white/30 text-sm px-4 py-2">
                 <Shield className="w-4 h-4 mr-2" />
@@ -258,12 +385,76 @@ function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
                 Real-time Processing
               </Badge>
             </div>
+
+            <Button 
+              onClick={handleLogin}
+              size="xl"
+              className="bg-white text-blue-900 hover:bg-gray-100 font-bold text-lg px-8 py-4 shadow-2xl"
+            >
+              Access Government Portal
+              <ChevronRight className="w-6 h-6 ml-2" />
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Enhanced Statistics Section */}
-      <section className="py-20 bg-white relative">
+      {/* Quick Access Portals - Professional Government Style */}
+      <section id="portals" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('quickAccess')}</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Secure access to role-specific dashboards for government officials and stakeholders
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded mt-4"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {portals.map((portal, index) => (
+              <Card 
+                key={index} 
+                className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:scale-105 cursor-pointer group"
+                onClick={() => handlePortalAccess(portal.email)}
+              >
+                <CardContent className="p-6 text-center">
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-xl ${portal.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                    <portal.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{t(portal.key)}</h3>
+                  <p className="text-sm text-gray-600 mb-3">{portal.email}</p>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="w-full group-hover:bg-blue-50 group-hover:border-blue-300"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Access Portal
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Demo Credentials Box */}
+          <Card className="bg-blue-50 border-blue-200">
+            <CardContent className="p-6">
+              <div className="text-center">
+                <Shield className="w-8 h-8 text-blue-600 mx-auto mb-3" />
+                <h3 className="text-lg font-bold text-blue-900 mb-2">Demo Access Information</h3>
+                <p className="text-blue-700 mb-4">
+                  Use password <span className="font-mono bg-blue-200 px-2 py-1 rounded">admin123</span> for all demo accounts
+                </p>
+                <Button onClick={handleLogin} className="bg-blue-600 hover:bg-blue-700 text-white">
+                  Try Demo Login
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Statistics Section */}
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('quickStats')}</h2>
@@ -289,8 +480,8 @@ function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
         </div>
       </section>
 
-      {/* Enhanced Key Features */}
-      <section className="py-20 bg-gray-50">
+      {/* Enhanced Features */}
+      <section id="services" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('keyFeatures')}</h2>
@@ -298,7 +489,7 @@ function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
               Cutting-edge technology stack powering transparent governance and efficient healthcare delivery
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <Card key={index} className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg group hover:scale-105">
                 <CardHeader>
@@ -311,17 +502,6 @@ function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
                   <p className="text-gray-600 leading-relaxed">{t(`${feature.key}Desc`)}</p>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-
-          {/* Technical Features Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {techFeatures.map((tech, index) => (
-              <div key={index} className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                <tech.icon className="w-10 h-10 text-blue-600 mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">{tech.title}</h3>
-                <p className="text-gray-600 text-sm">{tech.desc}</p>
-              </div>
             ))}
           </div>
         </div>
@@ -346,109 +526,7 @@ function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
         </div>
       </section>
 
-      {/* Enhanced Announcements and Contact */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            {/* Announcements */}
-            <div>
-              <div className="flex items-center gap-3 mb-8">
-                <Calendar className="w-8 h-8 text-blue-600" />
-                <h2 className="text-3xl font-bold text-gray-900">{t('announcements')}</h2>
-              </div>
-              <div className="space-y-6">
-                {announcements.map((announcement, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-shadow border-l-4 border-l-blue-500">
-                    <CardContent className="pt-6">
-                      <div className="flex items-start gap-4">
-                        <div className={`w-3 h-3 rounded-full mt-3 flex-shrink-0 ${
-                          announcement.priority === 'high' ? 'bg-red-500' :
-                          announcement.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
-                        }`}></div>
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-900 leading-relaxed mb-2">
-                            {language === 'hi' ? announcement.hi : announcement.en}
-                          </p>
-                          <div className="flex items-center gap-3">
-                            <Badge variant="outline" className="text-xs">
-                              {announcement.date}
-                            </Badge>
-                            <Badge className={`text-xs ${
-                              announcement.priority === 'high' ? 'bg-red-100 text-red-800' :
-                              announcement.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
-                              'bg-green-100 text-green-800'
-                            }`}>
-                              {announcement.priority} priority
-                            </Badge>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-
-            {/* Enhanced Contact Information */}
-            <div>
-              <div className="flex items-center gap-3 mb-8">
-                <Phone className="w-8 h-8 text-blue-600" />
-                <h2 className="text-3xl font-bold text-gray-900">{t('contact')}</h2>
-              </div>
-              <Card className="shadow-lg">
-                <CardContent className="pt-8">
-                  <div className="space-y-6">
-                    <div className="flex items-start gap-4 p-4 bg-red-50 rounded-lg">
-                      <Phone className="w-6 h-6 text-red-600 mt-1" />
-                      <div>
-                        <p className="font-bold text-red-900">{t('helpdesk')}</p>
-                        <p className="text-red-700 text-lg font-semibold">1800-123-4567</p>
-                        <p className="text-red-600 text-sm">Available 24/7 for emergencies</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg">
-                      <Mail className="w-6 h-6 text-blue-600 mt-1" />
-                      <div>
-                        <p className="font-bold text-blue-900">{t('email')}</p>
-                        <p className="text-blue-700 font-semibold">nrc-support@chhattisgarh.gov.in</p>
-                        <p className="text-blue-600 text-sm">Response within 2 hours</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4 p-4 bg-green-50 rounded-lg">
-                      <MapPin className="w-6 h-6 text-green-600 mt-1" />
-                      <div>
-                        <p className="font-bold text-green-900">{t('address')}</p>
-                        <p className="text-green-700 leading-relaxed">
-                          {language === 'hi' 
-                            ? "महानदी भवन, 2nd फ्लोर, सेक्टर-19, नया रायपुर, छत्तीसगढ़ - 492001"
-                            : "Mahanadi Bhawan, 2nd Floor, Sector-19, Naya Raipur, Chhattisgarh - 492001"
-                          }
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-8 pt-6 border-t">
-                    <h3 className="font-bold text-gray-900 mb-4">Quick Actions</h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      <Button variant="outline" size="sm" className="justify-start">
-                        <BookOpen className="w-4 h-4 mr-2" />
-                        User Manual
-                      </Button>
-                      <Button variant="outline" size="sm" className="justify-start">
-                        <Shield className="w-4 h-4 mr-2" />
-                        Security Policy
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Enhanced Footer */}
+      {/* Professional Government Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
@@ -486,13 +564,21 @@ function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
             </div>
             
             <div>
-              <h4 className="font-bold mb-4">{t('innovation')}</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Blockchain Security</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">AI Analytics</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Mobile Apps</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">API Documentation</a></li>
-              </ul>
+              <h4 className="font-bold mb-4">Contact Information</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <p className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  1800-123-4567
+                </p>
+                <p className="flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  support@chhattisgarh.gov.in
+                </p>
+                <p className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  Raipur, Chhattisgarh
+                </p>
+              </div>
             </div>
           </div>
           

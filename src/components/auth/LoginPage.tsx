@@ -205,8 +205,7 @@ export function LoginPage() {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 text-base"
-                  variant="govt"
+                  className="w-full h-12 text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                   size="lg"
                   disabled={isLoading}
                 >
