@@ -65,6 +65,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={getDashboardComponent()} />
       <Route path="/login" element={<LoginPage />} />
+      {/* Role-specific routes for navigation */}
       <Route path="/fund-allocation" element={getDashboardComponent()} />
       <Route path="/performance" element={getDashboardComponent()} />
       <Route path="/users" element={getDashboardComponent()} />
@@ -73,6 +74,23 @@ function AppRoutes() {
       <Route path="/alerts" element={getDashboardComponent()} />
       <Route path="/support" element={getDashboardComponent()} />
       <Route path="/settings" element={getDashboardComponent()} />
+      {/* Additional navigation routes */}
+      <Route path="/nrc" element={getDashboardComponent()} />
+      <Route path="/supervisors" element={getDashboardComponent()} />
+      <Route path="/resources" element={getDashboardComponent()} />
+      <Route path="/validation" element={getDashboardComponent()} />
+      <Route path="/teachers" element={getDashboardComponent()} />
+      <Route path="/referrals" element={getDashboardComponent()} />
+      <Route path="/followups" element={getDashboardComponent()} />
+      <Route path="/entry" element={getDashboardComponent()} />
+      <Route path="/progress" element={getDashboardComponent()} />
+      <Route path="/kits" element={getDashboardComponent()} />
+      <Route path="/communication" element={getDashboardComponent()} />
+      <Route path="/admissions" element={getDashboardComponent()} />
+      <Route path="/treatment" element={getDashboardComponent()} />
+      <Route path="/funds" element={getDashboardComponent()} />
+      <Route path="/statistics" element={getDashboardComponent()} />
+      <Route path="/complaints" element={getDashboardComponent()} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
