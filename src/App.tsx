@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LoginPage } from "@/components/auth/LoginPage";
+import { LandingPage } from "@/components/LandingPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import DistrictDashboard from "./pages/DistrictDashboard";
 import BlockDashboard from "./pages/BlockDashboard";
@@ -31,7 +32,11 @@ function AppRoutes() {
   }
 
   if (!isAuthenticated) {
-    return <LoginPage />;
+    // Check if we're on the login route
+    if (window.location.pathname === '/login') {
+      return <LoginPage />;
+    }
+    return <LandingPage />;
   }
 
   // Route based on user role
@@ -59,6 +64,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={getDashboardComponent()} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/fund-allocation" element={getDashboardComponent()} />
       <Route path="/performance" element={getDashboardComponent()} />
       <Route path="/users" element={getDashboardComponent()} />
