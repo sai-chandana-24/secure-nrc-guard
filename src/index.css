@@ -6,64 +6,64 @@
 
 @layer base {
   :root {
-    /* Chhattisgarh Government Official Colors */
-    --background: 251 253 255;
-    --foreground: 12 16 36;
+    /* Chhattisgarh Government Official Colors - Light Theme */
+    --background: 252 253 255;
+    --foreground: 30 41 59;
 
-    --card: 0 0% 100%;
-    --card-foreground: 12 16 36;
+    --card: 255 255 255;
+    --card-foreground: 30 41 59;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 12 16 36;
+    --popover: 255 255 255;
+    --popover-foreground: 30 41 59;
 
     /* Chhattisgarh Navy Blue Primary */
-    --primary: 220 85% 25%;
-    --primary-foreground: 251 253 255;
-    --primary-glow: 220 85% 35%;
+    --primary: 220 85% 35%;
+    --primary-foreground: 255 255 255;
+    --primary-glow: 220 85% 45%;
 
-    /* Government Saffron Secondary */
-    --secondary: 25 95% 53%;
-    --secondary-foreground: 251 253 255;
+    /* Light Grey Secondary (replacing saffron) */
+    --secondary: 220 15% 96%;
+    --secondary-foreground: 30 41 59;
 
     /* Professional Muted Tones */
-    --muted: 220 15% 96%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 220 13% 95%;
+    --muted-foreground: 100 10% 50%;
 
     /* Government Green Accent */
-    --accent: 138 76% 32%;
-    --accent-foreground: 251 253 255;
-    --accent-light: 138 76% 92%;
+    --accent: 142 69% 40%;
+    --accent-foreground: 255 255 255;
+    --accent-light: 142 69% 95%;
 
     /* Government Maroon Tertiary */
-    --tertiary: 356 75% 28%;
-    --tertiary-foreground: 251 253 255;
+    --tertiary: 356 70% 35%;
+    --tertiary-foreground: 255 255 255;
 
     /* Status Colors */
-    --success: 138 76% 32%;
-    --success-foreground: 251 253 255;
-    --warning: 25 95% 53%;
-    --warning-foreground: 12 16 36;
+    --success: 142 69% 40%;
+    --success-foreground: 255 255 255;
+    --warning: 38 95% 65%;
+    --warning-foreground: 30 41 59;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 251 253 255;
+    --destructive-foreground: 255 255 255;
 
     /* Professional Borders */
-    --border: 220 15% 91%;
-    --input: 220 15% 91%;
-    --ring: 220 85% 25%;
+    --border: 220 13% 88%;
+    --input: 220 13% 88%;
+    --ring: 220 85% 35%;
 
     /* Chhattisgarh Government Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(25 95% 63%));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(138 76% 42%));
-    --gradient-bg: linear-gradient(180deg, hsl(251 253 255), hsl(245 251 255));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(251 253 255));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent)));
+    --gradient-primary: linear-gradient(135deg, hsl(220 85% 35%), hsl(220 85% 45%));
+    --gradient-secondary: linear-gradient(135deg, hsl(220 13% 95%), hsl(220 15% 92%));
+    --gradient-accent: linear-gradient(135deg, hsl(142 69% 40%), hsl(142 69% 50%));
+    --gradient-bg: linear-gradient(180deg, hsl(252 253 255), hsl(248 250 252));
+    --gradient-card: linear-gradient(145deg, hsl(255 255 255), hsl(248 250 252));
+    --gradient-hero: linear-gradient(135deg, hsl(220 85% 35%), hsl(142 69% 40%), hsl(356 70% 35%));
 
     /* Government Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(12 16 36 / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(12 16 36 / 0.1), 0 2px 4px -2px hsl(12 16 36 / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(12 16 36 / 0.1), 0 4px 6px -4px hsl(12 16 36 / 0.1);
-    --shadow-glow: 0 0 0 1px hsl(var(--primary) / 0.1), 0 4px 16px hsl(var(--primary) / 0.12);
+    --shadow-sm: 0 1px 2px 0 hsl(30 41 59 / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(30 41 59 / 0.1), 0 2px 4px -2px hsl(30 41 59 / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(30 41 59 / 0.1), 0 4px 6px -4px hsl(30 41 59 / 0.1);
+    --shadow-glow: 0 0 0 1px hsl(220 85% 35% / 0.1), 0 4px 16px hsl(220 85% 35% / 0.12);
 
     /* Professional Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -89,63 +89,63 @@
   }
 
   .dark {
-    --background: 12 16 36;
-    --foreground: 251 253 255;
+    --background: 30 41 59;
+    --foreground: 252 253 255;
 
-    --card: 20 25 45;
-    --card-foreground: 251 253 255;
+    --card: 51 65 85;
+    --card-foreground: 252 253 255;
 
-    --popover: 20 25 45;
-    --popover-foreground: 251 253 255;
+    --popover: 51 65 85;
+    --popover-foreground: 252 253 255;
 
-    --primary: 220 85% 35%;
-    --primary-foreground: 251 253 255;
-    --primary-glow: 220 85% 45%;
+    --primary: 220 85% 45%;
+    --primary-foreground: 255 255 255;
+    --primary-glow: 220 85% 55%;
 
-    --secondary: 25 95% 63%;
-    --secondary-foreground: 12 16 36;
+    --secondary: 220 13% 25%;
+    --secondary-foreground: 252 253 255;
 
-    --muted: 20 25 45;
-    --muted-foreground: 220 15% 65%;
+    --muted: 51 65 85;
+    --muted-foreground: 148 163 184;
 
-    --accent: 138 76% 42%;
-    --accent-foreground: 251 253 255;
-    --accent-light: 138 76% 20%;
+    --accent: 142 69% 50%;
+    --accent-foreground: 255 255 255;
+    --accent-light: 142 69% 20%;
 
-    --tertiary: 356 75% 38%;
-    --tertiary-foreground: 251 253 255;
+    --tertiary: 356 70% 45%;
+    --tertiary-foreground: 255 255 255;
 
-    --success: 138 76% 42%;
-    --success-foreground: 251 253 255;
-    --warning: 25 95% 63%;
-    --warning-foreground: 12 16 36;
+    --success: 142 69% 50%;
+    --success-foreground: 255 255 255;
+    --warning: 38 95% 70%;
+    --warning-foreground: 30 41 59;
     --destructive: 0 84% 65%;
-    --destructive-foreground: 251 253 255;
+    --destructive-foreground: 255 255 255;
 
-    --border: 20 25 45;
-    --input: 20 25 45;
-    --ring: 220 85% 35%;
+    --border: 51 65 85;
+    --input: 51 65 85;
+    --ring: 220 85% 45%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(25 95% 73%));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(138 76% 52%));
-    --gradient-bg: linear-gradient(180deg, hsl(12 16 36), hsl(20 25 45));
-    --gradient-card: linear-gradient(145deg, hsl(20 25 45), hsl(12 16 36));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent)));
+    --gradient-primary: linear-gradient(135deg, hsl(220 85% 45%), hsl(220 85% 55%));
+    --gradient-secondary: linear-gradient(135deg, hsl(220 13% 25%), hsl(220 13% 30%));
+    --gradient-accent: linear-gradient(135deg, hsl(142 69% 50%), hsl(142 69% 60%));
+    --gradient-bg: linear-gradient(180deg, hsl(30 41 59), hsl(51 65 85));
+    --gradient-card: linear-gradient(145deg, hsl(51 65 85), hsl(30 41 59));
+    --gradient-hero: linear-gradient(135deg, hsl(220 85% 45%), hsl(142 69% 50%), hsl(356 70% 45%));
 
-    --shadow-sm: 0 1px 2px 0 hsl(12 16 36 / 0.3);
-    --shadow-md: 0 4px 6px -1px hsl(12 16 36 / 0.4), 0 2px 4px -2px hsl(12 16 36 / 0.4);
-    --shadow-lg: 0 10px 15px -3px hsl(12 16 36 / 0.4), 0 4px 6px -4px hsl(12 16 36 / 0.4);
-    --shadow-glow: 0 0 0 1px hsl(var(--primary) / 0.2), 0 4px 16px hsl(var(--primary) / 0.25);
+    --shadow-sm: 0 1px 2px 0 hsl(30 41 59 / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(30 41 59 / 0.4), 0 2px 4px -2px hsl(30 41 59 / 0.4);
+    --shadow-lg: 0 10px 15px -3px hsl(30 41 59 / 0.4), 0 4px 6px -4px hsl(30 41 59 / 0.4);
+    --shadow-glow: 0 0 0 1px hsl(220 85% 45% / 0.2), 0 4px 16px hsl(220 85% 45% / 0.25);
 
-    --sidebar-background: 12 16 36;
-    --sidebar-foreground: 251 253 255;
-    --sidebar-primary: 220 85% 35%;
-    --sidebar-primary-foreground: 251 253 255;
-    --sidebar-accent: 20 25 45;
-    --sidebar-accent-foreground: 251 253 255;
-    --sidebar-border: 20 25 45;
-    --sidebar-ring: 220 85% 35%;
+    --sidebar-background: 30 41 59;
+    --sidebar-foreground: 252 253 255;
+    --sidebar-primary: 220 85% 45%;
+    --sidebar-primary-foreground: 255 255 255;
+    --sidebar-accent: 51 65 85;
+    --sidebar-accent-foreground: 252 253 255;
+    --sidebar-border: 51 65 85;
+    --sidebar-ring: 220 85% 45%;
   }
 }
 
