@@ -35,9 +35,12 @@ export function LoginPage() {
     }
 
     const success = await login(email, password);
-    if (!success) {
-      setError('Invalid credentials. Please check your email and password.');
+    if (success) {
+      const redirect = searchParams.get('redirect') || '/';
+      navigate(redirect, { replace: true });
+      return;
     }
+    setError('Invalid credentials. Please check your email and password.');
     // Login success is handled by the AuthContext which will redirect automatically
   };
 
@@ -275,7 +278,7 @@ export function LoginPage() {
           {/* Footer */}
           <div className="text-center space-y-2">
             <p className="text-sm text-muted-foreground">
-              © 2024 Government of Chhattisgarh | All Rights Reserved
+              © 2025 Government of Chhattisgarh | All Rights Reserved
             </p>
             <p className="text-xs text-muted-foreground">
               Developed under Digital India Initiative | Secure Government Portal

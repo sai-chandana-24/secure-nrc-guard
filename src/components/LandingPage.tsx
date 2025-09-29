@@ -596,8 +596,8 @@ function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
               <div className="text-center md:text-right">
                 <p className="text-gray-400 text-sm mb-1">
                   {language === 'hi' 
-                    ? "© 2024 छत्तीसगढ़ सरकार। सभी अधिकार सुरक्षित।"
-                    : "© 2024 Government of Chhattisgarh. All rights reserved."
+                    ? "© 2025 छत्तीसगढ़ सरकार। सभी अधिकार सुरक्षित।"
+                    : "© 2025 Government of Chhattisgarh. All rights reserved."
                   }
                 </p>
                 <p className="text-gray-500 text-xs">
