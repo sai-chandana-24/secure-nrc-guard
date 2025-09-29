@@ -15,7 +15,8 @@ import {
   UserCheck,
   UserPlus,
   HeartHandshake,
-  Eye
+  Eye,
+  Globe
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -39,6 +40,7 @@ const getNavItems = (role: string) => {
     case 'admin':
       return [
         { title: "Dashboard", url: "/", icon: LayoutDashboard },
+        { title: "Main Portal", url: "/home", icon: Globe },
         { title: "Fund Allocation", url: "/fund-allocation", icon: DollarSign },
         { title: "Performance Analytics", url: "/performance", icon: BarChart3 },
         { title: "User Management", url: "/users", icon: Users },
@@ -48,6 +50,7 @@ const getNavItems = (role: string) => {
     case 'district':
       return [
         { title: "District Overview", url: "/", icon: MapPin },
+        { title: "Main Portal", url: "/home", icon: Globe },
         { title: "Block Performance", url: "/performance", icon: BarChart3 },
         { title: "Fund Utilization", url: "/fund-allocation", icon: DollarSign },
         { title: "NRC Monitoring", url: "/nrc", icon: HeartHandshake },

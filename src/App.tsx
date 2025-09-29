@@ -66,6 +66,9 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={getDashboardComponent()} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/home" element={<LandingPage />} />
+      <Route path="/main" element={<LandingPage />} />
+      <Route path="/landing" element={<LandingPage />} />
       {/* Role-specific routes for navigation */}
       <Route path="/fund-allocation" element={getDashboardComponent()} />
       <Route path="/performance" element={getDashboardComponent()} />
