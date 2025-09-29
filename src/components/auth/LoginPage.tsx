@@ -250,15 +250,15 @@ export function LoginPage() {
                   <Shield className="w-4 h-4" />
                   Demo Access Credentials
                 </h4>
-                <div className="grid grid-cols-1 gap-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Email:</span>
-                    <span className="font-mono text-primary">admin@chhattisgarh.gov.in</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Password:</span>
-                    <span className="font-mono text-primary">admin123</span>
-                  </div>
+                <div className="grid grid-cols-1 gap-2 text-xs">
+                  <p><strong>Admin:</strong> admin@chhattisgarh.gov.in</p>
+                  <p><strong>District Officer:</strong> district@chhattisgarh.gov.in</p>
+                  <p><strong>Block Officer:</strong> block@chhattisgarh.gov.in</p>
+                  <p><strong>Supervisor:</strong> supervisor@chhattisgarh.gov.in</p>
+                  <p><strong>Teacher:</strong> teacher@chhattisgarh.gov.in</p>
+                  <p><strong>NRC Officer:</strong> nrc@chhattisgarh.gov.in</p>
+                  <p><strong>Public Access:</strong> public@example.com</p>
+                  <p className="text-primary font-semibold mt-2">Password: admin123 (for all accounts)</p>
                 </div>
               </div>
             </CardContent>
