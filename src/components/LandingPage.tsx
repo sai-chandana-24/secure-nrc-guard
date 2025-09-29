@@ -37,6 +37,7 @@ import {
 import chhattishgarhLogo from '@/assets/chhattisgarh-logo.png';
 import indiaEmblem from '@/assets/india-emblem.png';
 import digitalIndiaLogo from '@/assets/digital-india-logo.png';
+import { useNavigate } from 'react-router-dom';
 
 interface LanguageContextType {
   language: 'hi' | 'en';
@@ -235,14 +236,15 @@ const quickLinks = [
 
 function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogin = () => {
-    window.location.href = '/login';
+    navigate('/login?redirect=%2F', { replace: true });
   };
 
   const handlePortalAccess = (email: string) => {
     // Pre-fill login with the role email for quick access
-    window.location.href = `/login?email=${encodeURIComponent(email)}`;
+    navigate(`/login?email=${encodeURIComponent(email)}&redirect=%2F`);
   };
 
   return (

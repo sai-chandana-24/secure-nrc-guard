@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LoginPage } from "@/components/auth/LoginPage";
 import { LandingPage } from "@/components/LandingPage";
@@ -65,7 +65,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={getDashboardComponent()} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />} />
       <Route path="/home" element={<LandingPage />} />
       <Route path="/main" element={<LandingPage />} />
       <Route path="/landing" element={<LandingPage />} />

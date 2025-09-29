@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import chhattishgarhLogo from '@/assets/chhattisgarh-logo.png';
 import indiaEmblem from '@/assets/india-emblem.png';
 import digitalIndiaLogo from '@/assets/digital-india-logo.png';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -16,6 +17,13 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const { login, isLoading } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const preset = searchParams.get('email');
+    if (preset) setEmail(preset);
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,9 +35,12 @@ export function LoginPage() {
     }
 
     const success = await login(email, password);
-    if (!success) {
-      setError('Invalid credentials. Please check your email and password.');
+    if (success) {
+      const redirect = searchParams.get('redirect') || '/';
+      navigate(redirect, { replace: true });
+      return;
     }
+    setError('Invalid credentials. Please check your email and password.');
   };
 
   return (
