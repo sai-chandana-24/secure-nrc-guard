@@ -239,12 +239,12 @@ function LandingPageContent({ language, setLanguage, t }: LanguageContextType) {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    navigate('/login?redirect=%2F', { replace: true });
+    navigate('/login');
   };
 
   const handlePortalAccess = (email: string) => {
     // Pre-fill login with the role email for quick access
-    navigate(`/login?email=${encodeURIComponent(email)}&redirect=%2F`);
+    navigate(`/login?email=${encodeURIComponent(email)}`);
   };
 
   return (
