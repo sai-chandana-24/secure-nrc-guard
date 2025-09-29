@@ -2,61 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Government E-Finance Platform Design System */
+/* Chhattisgarh Government E-Finance Platform Design System */
 
 @layer base {
   :root {
-    /* Core Government Colors */
-    --background: 248 250 252;
-    --foreground: 15 23 42;
+    /* Chhattisgarh Government Official Colors */
+    --background: 251 253 255;
+    --foreground: 12 16 36;
 
     --card: 0 0% 100%;
-    --card-foreground: 15 23 42;
+    --card-foreground: 12 16 36;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 15 23 42;
+    --popover-foreground: 12 16 36;
 
-    /* Government Blue Primary */
-    --primary: 213 94% 31%;
-    --primary-foreground: 248 250 252;
-    --primary-glow: 213 94% 45%;
+    /* Chhattisgarh Navy Blue Primary */
+    --primary: 220 85% 25%;
+    --primary-foreground: 251 253 255;
+    --primary-glow: 220 85% 35%;
 
-    /* Professional Secondary */
-    --secondary: 210 20% 98%;
-    --secondary-foreground: 15 23 42;
+    /* Government Saffron Secondary */
+    --secondary: 25 95% 53%;
+    --secondary-foreground: 251 253 255;
 
-    /* Muted Professional Tones */
-    --muted: 210 20% 96%;
-    --muted-foreground: 100 7% 45%;
+    /* Professional Muted Tones */
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 45%;
 
     /* Government Green Accent */
-    --accent: 142 71% 45%;
-    --accent-foreground: 248 250 252;
-    --accent-light: 142 71% 92%;
+    --accent: 138 76% 32%;
+    --accent-foreground: 251 253 255;
+    --accent-light: 138 76% 92%;
+
+    /* Government Maroon Tertiary */
+    --tertiary: 356 75% 28%;
+    --tertiary-foreground: 251 253 255;
 
     /* Status Colors */
-    --success: 142 71% 45%;
-    --success-foreground: 248 250 252;
-    --warning: 38 92% 50%;
-    --warning-foreground: 15 23 42;
+    --success: 138 76% 32%;
+    --success-foreground: 251 253 255;
+    --warning: 25 95% 53%;
+    --warning-foreground: 12 16 36;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 248 250 252;
+    --destructive-foreground: 251 253 255;
 
     /* Professional Borders */
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 213 94% 31%;
+    --border: 220 15% 91%;
+    --input: 220 15% 91%;
+    --ring: 220 85% 25%;
 
-    /* Government Dashboard Gradients */
+    /* Chhattisgarh Government Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(142 71% 55%));
-    --gradient-bg: linear-gradient(180deg, hsl(248 250 252), hsl(241 245 249));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(248 250 252));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(25 95% 63%));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(138 76% 42%));
+    --gradient-bg: linear-gradient(180deg, hsl(251 253 255), hsl(245 251 255));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(251 253 255));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent)));
 
-    /* Professional Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(15 23 42 / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(15 23 42 / 0.1), 0 2px 4px -2px hsl(15 23 42 / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(15 23 42 / 0.1), 0 4px 6px -4px hsl(15 23 42 / 0.1);
+    /* Government Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(12 16 36 / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(12 16 36 / 0.1), 0 2px 4px -2px hsl(12 16 36 / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(12 16 36 / 0.1), 0 4px 6px -4px hsl(12 16 36 / 0.1);
     --shadow-glow: 0 0 0 1px hsl(var(--primary) / 0.1), 0 4px 16px hsl(var(--primary) / 0.12);
 
     /* Professional Animations */
@@ -83,58 +89,63 @@
   }
 
   .dark {
-    --background: 15 23 42;
-    --foreground: 248 250 252;
+    --background: 12 16 36;
+    --foreground: 251 253 255;
 
-    --card: 30 41 59;
-    --card-foreground: 248 250 252;
+    --card: 20 25 45;
+    --card-foreground: 251 253 255;
 
-    --popover: 30 41 59;
-    --popover-foreground: 248 250 252;
+    --popover: 20 25 45;
+    --popover-foreground: 251 253 255;
 
-    --primary: 213 94% 45%;
-    --primary-foreground: 248 250 252;
-    --primary-glow: 213 94% 55%;
+    --primary: 220 85% 35%;
+    --primary-foreground: 251 253 255;
+    --primary-glow: 220 85% 45%;
 
-    --secondary: 30 41 59;
-    --secondary-foreground: 248 250 252;
+    --secondary: 25 95% 63%;
+    --secondary-foreground: 12 16 36;
 
-    --muted: 30 41 59;
-    --muted-foreground: 148 163 184;
+    --muted: 20 25 45;
+    --muted-foreground: 220 15% 65%;
 
-    --accent: 142 71% 50%;
-    --accent-foreground: 248 250 252;
-    --accent-light: 142 71% 20%;
+    --accent: 138 76% 42%;
+    --accent-foreground: 251 253 255;
+    --accent-light: 138 76% 20%;
 
-    --success: 142 71% 50%;
-    --success-foreground: 248 250 252;
-    --warning: 38 92% 60%;
-    --warning-foreground: 15 23 42;
+    --tertiary: 356 75% 38%;
+    --tertiary-foreground: 251 253 255;
+
+    --success: 138 76% 42%;
+    --success-foreground: 251 253 255;
+    --warning: 25 95% 63%;
+    --warning-foreground: 12 16 36;
     --destructive: 0 84% 65%;
-    --destructive-foreground: 248 250 252;
+    --destructive-foreground: 251 253 255;
 
-    --border: 30 41 59;
-    --input: 30 41 59;
-    --ring: 213 94% 45%;
+    --border: 20 25 45;
+    --input: 20 25 45;
+    --ring: 220 85% 35%;
 
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(142 71% 60%));
-    --gradient-bg: linear-gradient(180deg, hsl(15 23 42), hsl(30 41 59));
-    --gradient-card: linear-gradient(145deg, hsl(30 41 59), hsl(15 23 42));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(25 95% 73%));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(138 76% 52%));
+    --gradient-bg: linear-gradient(180deg, hsl(12 16 36), hsl(20 25 45));
+    --gradient-card: linear-gradient(145deg, hsl(20 25 45), hsl(12 16 36));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent)));
 
-    --shadow-sm: 0 1px 2px 0 hsl(15 23 42 / 0.3);
-    --shadow-md: 0 4px 6px -1px hsl(15 23 42 / 0.4), 0 2px 4px -2px hsl(15 23 42 / 0.4);
-    --shadow-lg: 0 10px 15px -3px hsl(15 23 42 / 0.4), 0 4px 6px -4px hsl(15 23 42 / 0.4);
+    --shadow-sm: 0 1px 2px 0 hsl(12 16 36 / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(12 16 36 / 0.4), 0 2px 4px -2px hsl(12 16 36 / 0.4);
+    --shadow-lg: 0 10px 15px -3px hsl(12 16 36 / 0.4), 0 4px 6px -4px hsl(12 16 36 / 0.4);
     --shadow-glow: 0 0 0 1px hsl(var(--primary) / 0.2), 0 4px 16px hsl(var(--primary) / 0.25);
 
-    --sidebar-background: 15 23 42;
-    --sidebar-foreground: 248 250 252;
-    --sidebar-primary: 213 94% 45%;
-    --sidebar-primary-foreground: 248 250 252;
-    --sidebar-accent: 30 41 59;
-    --sidebar-accent-foreground: 248 250 252;
-    --sidebar-border: 30 41 59;
-    --sidebar-ring: 213 94% 45%;
+    --sidebar-background: 12 16 36;
+    --sidebar-foreground: 251 253 255;
+    --sidebar-primary: 220 85% 35%;
+    --sidebar-primary-foreground: 251 253 255;
+    --sidebar-accent: 20 25 45;
+    --sidebar-accent-foreground: 251 253 255;
+    --sidebar-border: 20 25 45;
+    --sidebar-ring: 220 85% 35%;
   }
 }
 
@@ -158,8 +169,16 @@
     background: var(--gradient-primary);
   }
   
+  .govt-secondary-gradient {
+    background: var(--gradient-secondary);
+  }
+  
   .govt-accent-gradient {
     background: var(--gradient-accent);
+  }
+  
+  .govt-hero-gradient {
+    background: var(--gradient-hero);
   }
   
   .govt-bg-gradient {

@@ -99,10 +99,10 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-primary mb-2">
-                Welcome to NRC Admin Dashboard
+                Chhattisgarh NRC E-Finance Dashboard
               </h1>
               <p className="text-muted-foreground text-lg">
-                Manage nutritional rehabilitation centers across the state with blockchain-secured transactions
+                State-level management of Nutritional Rehabilitation Centers with secure blockchain transactions
               </p>
             </div>
             <div className="hidden lg:block">

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Bell, Search, User, Shield, Globe } from 'lucide-react';
+import { Bell, Search, Shield, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import govtLogo from '@/assets/govt-logo.png';
+import { UserProfile } from '@/components/auth/UserProfile';
+import chhattishgarhLogo from '@/assets/chhattisgarh-logo.png';
 
 export function DashboardHeader() {
   return (
@@ -14,13 +15,13 @@ export function DashboardHeader() {
         <div className="flex items-center gap-4">
           <SidebarTrigger className="p-2 hover:bg-muted rounded-md govt-transition" />
           <div className="hidden md:flex items-center gap-3">
-            <img src={govtLogo} alt="Government Logo" className="h-8" />
+            <img src={chhattishgarhLogo} alt="Chhattisgarh Government Logo" className="h-10" />
             <div>
               <h1 className="text-lg font-semibold text-primary">
                 NRC E-Finance Portal
               </h1>
               <p className="text-xs text-muted-foreground">
-                Nutritional Rehabilitation Centers - State Administration
+                Government of Chhattisgarh - Nutritional Rehabilitation Centers
               </p>
             </div>
           </div>
@@ -66,12 +67,7 @@ export function DashboardHeader() {
           </div>
 
           {/* User Profile */}
-          <Button variant="ghost" size="sm" className="gap-2">
-            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-              <User className="w-3 h-3 text-primary-foreground" />
-            </div>
-            <span className="hidden sm:inline text-sm font-medium">Admin</span>
-          </Button>
+          <UserProfile />
         </div>
       </div>
     </header>

@@ -16,9 +16,11 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         govt: "govt-gradient text-primary-foreground hover:shadow-lg govt-transition font-semibold tracking-wide",
+        "govt-secondary": "govt-secondary-gradient text-secondary-foreground hover:shadow-lg govt-transition font-semibold tracking-wide",
         success: "bg-success text-success-foreground hover:bg-success/90 govt-shadow-md",
         warning: "bg-warning text-warning-foreground hover:bg-warning/90 govt-shadow-md",
         accent: "govt-accent-gradient text-accent-foreground hover:shadow-lg govt-transition font-semibold",
+        tertiary: "bg-tertiary text-tertiary-foreground hover:bg-tertiary/90 govt-shadow-md font-semibold",
       },
       size: {
         default: "h-10 px-4 py-2",
