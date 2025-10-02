@@ -315,7 +315,7 @@ export const LandingPage = () => {
                       className={`w-full bg-gradient-to-r ${dashboard.bgGradient} hover:opacity-90 text-white font-semibold py-5 md:py-6 rounded-lg transition-all duration-300 group-hover:shadow-lg text-sm md:text-base`}
                       aria-label={`Login to access ${dashboard.title}`}
                     >
-                      <Link to={`/login?email=${encodeURIComponent(dashboard.email)}&redirect=/`} onClick={(e) => e.stopPropagation()}>
+                      <Link to={`/login?email=${encodeURIComponent(dashboard.email)}&redirect=/`} onClick={(e) => { e.stopPropagation(); if (isAuthenticated) logout(); }}>
                         {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
                         <ChevronRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                       </Link>
