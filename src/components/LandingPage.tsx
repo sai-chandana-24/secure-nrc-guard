@@ -221,49 +221,61 @@ export const LandingPage = () => {
             <div className="w-24 h-1 govt-gradient mx-auto rounded mt-4"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          <div className="space-y-4">
             {dashboards.map((dashboard, index) => {
               const Icon = dashboard.icon;
               return (
-                <Card
+                <div
                   key={index}
-                  className="group relative overflow-hidden border-2 border-border bg-card hover:border-primary govt-transition hover:shadow-2xl animate-fade-in"
+                  className="group relative overflow-hidden bg-card border-2 border-border hover:border-primary rounded-xl p-6 md:p-8 govt-transition hover:shadow-2xl animate-fade-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${dashboard.bgGradient} opacity-0 group-hover:opacity-5 govt-transition`} />
-                  <CardHeader className="relative pb-4">
-                    <div className={`w-14 h-14 md:w-16 md:h-16 rounded-xl bg-gradient-to-br ${dashboard.bgGradient} flex items-center justify-center mb-4 group-hover:scale-110 govt-transition govt-shadow-lg`}>
-                      <Icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
+                  <div className={`absolute inset-0 bg-gradient-to-r ${dashboard.bgGradient} opacity-0 group-hover:opacity-5 govt-transition`} />
+                  
+                  <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6">
+                    {/* Icon Section */}
+                    <div className={`flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-xl bg-gradient-to-br ${dashboard.bgGradient} flex items-center justify-center group-hover:scale-110 govt-transition govt-shadow-lg`}>
+                      <Icon className="w-10 h-10 md:w-12 md:h-12 text-white" />
                     </div>
-                    <CardTitle className="text-xl md:text-2xl font-bold text-foreground group-hover:text-primary govt-transition">
-                      {dashboard.title}
-                    </CardTitle>
-                    <CardDescription className="text-sm md:text-base text-muted-foreground">
-                      {dashboard.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="relative">
-                    <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6 pb-6 border-b border-border">
-                      {Object.entries(dashboard.stats).map(([key, value]) => (
-                        <div key={key} className="text-center">
-                          <p className="text-lg md:text-2xl font-bold text-primary">{value}</p>
-                          <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wide">{key}</p>
-                        </div>
-                      ))}
+
+                    {/* Content Section */}
+                    <div className="flex-grow text-center md:text-left">
+                      <h3 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-primary govt-transition mb-2">
+                        {dashboard.title}
+                      </h3>
+                      <p className="text-sm md:text-base text-muted-foreground mb-4">
+                        {dashboard.description}
+                      </p>
+                      
+                      {/* Stats */}
+                      <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-6 mb-4">
+                        {Object.entries(dashboard.stats).map(([key, value]) => (
+                          <div key={key} className="flex items-center gap-2">
+                            <span className="text-lg md:text-xl font-bold text-primary">{value}</span>
+                            <span className="text-xs text-muted-foreground uppercase">{key}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <p className="text-xs text-muted-foreground">
+                        {dashboard.email}
+                      </p>
                     </div>
-                    <Button
-                      type="button"
-                      className={`w-full bg-gradient-to-r ${dashboard.bgGradient} hover:opacity-90 text-white font-semibold py-5 md:py-6 rounded-lg govt-transition group-hover:shadow-lg text-sm md:text-base`}
-                      onClick={() => handleDashboardClick(dashboard.email)}
-                    >
-                      {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
-                      <ChevronRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 govt-transition" />
-                    </Button>
-                    <p className="text-center text-xs text-muted-foreground mt-3">
-                      {dashboard.email}
-                    </p>
-                  </CardContent>
-                </Card>
+
+                    {/* Button Section */}
+                    <div className="flex-shrink-0 w-full md:w-auto">
+                      <Button
+                        type="button"
+                        size="lg"
+                        className={`w-full md:w-auto bg-gradient-to-r ${dashboard.bgGradient} hover:opacity-90 text-white font-semibold px-8 py-6 rounded-lg govt-transition group-hover:shadow-xl text-base md:text-lg`}
+                        onClick={() => handleDashboardClick(dashboard.email)}
+                      >
+                        {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
+                        <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 govt-transition" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>
