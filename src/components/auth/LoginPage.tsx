@@ -345,25 +345,18 @@ export function LoginPage() {
                 </div>
               </div>
 
-              {/* Demo Credentials - Only show in login mode */}
-              {mode === 'login' && (
-                <div className="p-4 bg-muted/30 rounded-lg border border-primary/20">
-                  <h4 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
-                    <Shield className="w-4 h-4" />
-                    Demo Access Credentials
-                  </h4>
-                  <div className="grid grid-cols-1 gap-2 text-xs">
-                    <p><strong>Admin:</strong> admin@chhattisgarh.gov.in</p>
-                    <p><strong>District Officer:</strong> district@chhattisgarh.gov.in</p>
-                    <p><strong>Block Officer:</strong> block@chhattisgarh.gov.in</p>
-                    <p><strong>Supervisor:</strong> supervisor@chhattisgarh.gov.in</p>
-                    <p><strong>Teacher:</strong> teacher@chhattisgarh.gov.in</p>
-                    <p><strong>NRC Officer:</strong> nrc@chhattisgarh.gov.in</p>
-                    <p><strong>Public Access:</strong> public@example.com</p>
-                    <p className="text-primary font-semibold mt-2">Password: admin123 (for all accounts)</p>
-                  </div>
-                </div>
-              )}
+              {/* Getting Started Info */}
+              <div className="p-4 bg-muted/30 rounded-lg border border-primary/20">
+                <h4 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  Getting Started
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  {mode === 'login' 
+                    ? 'Use your government credentials to access the system. New users should sign up first.' 
+                    : 'Create your account with official government credentials to access the NRC E-Finance Management System.'}
+                </p>
+              </div>
             </CardContent>
           </Card>
 
