@@ -1,51 +1,56 @@
-<Card 
-  key={index}
-  className="group relative overflow-hidden border-2 border-gray-200 bg-white hover:border-blue-500 transition-all duration-300 hover:shadow-2xl cursor-pointer"
->
-  <div className={`absolute inset-0 bg-gradient-to-br ${dashboard.bgGradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 
-  <CardHeader className="relative pb-4">
-    <div className={`w-14 h-14 md:w-16 md:h-16 rounded-xl bg-gradient-to-br ${dashboard.bgGradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-      <Icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+
+// LandingPage component: minimal, reliable login redirect
+// - Exports a named component "LandingPage" (and default) to satisfy imports in App.tsx
+// - Uses design-system components and semantic HTML
+// - Clicking the button logs out any existing session, then routes to /login with a redirect back to /
+
+export const LandingPage: React.FC = () => {
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    try {
+      if (isAuthenticated) {
+        logout();
+      }
+    } catch (e) {
+      // no-op: logout is safe
+    }
+    navigate("/login?redirect=/");
+  };
+
+  return (
+    <div className="min-h-screen">
+      <header className="container mx-auto px-6 py-10">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Welcome to the Dashboard Portal</h1>
+        <p className="mt-2 text-muted-foreground">Please sign in to access your role-based dashboard.</p>
+      </header>
+
+      <main className="container mx-auto px-6 pb-16">
+        <section aria-labelledby="access-title">
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle id="access-title">Access Your Dashboard</CardTitle>
+              <CardDescription>Authenticate to continue. You will be redirected back after login.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={handleLoginClick} className="w-full" aria-label="Login to access dashboards">
+                <span>Login to Access</span>
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        </section>
+      </main>
     </div>
-    <CardTitle className="text-xl md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-      {dashboard.title}
-    </CardTitle>
-    <CardDescription className="text-sm md:text-base text-gray-600">
-      {dashboard.description}
-    </CardDescription>
-  </CardHeader>
+  );
+};
 
-  <CardContent className="relative">
-    <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6 pb-6 border-b border-gray-100">
-      {Object.entries(dashboard.stats).map(([key, value]) => (
-        <div key={key} className="text-center">
-          <p className="text-lg md:text-2xl font-bold text-blue-600">{value}</p>
-          <p className="text-[10px] md:text-xs text-gray-500 uppercase tracking-wide">{key}</p>
-        </div>
-      ))}
-    </div>
-
-    <Button 
-      className={`w-full bg-gradient-to-r ${dashboard.bgGradient} hover:opacity-90 text-white font-semibold py-5 md:py-6 rounded-lg transition-all duration-300 group-hover:shadow-lg text-sm md:text-base`}
-      aria-label={`Login to access ${dashboard.title}`}
-    >
-      <Link
-        to={`/login?email=${encodeURIComponent(dashboard.email)}&redirect=/`}
-        onClick={(e) => {
-          e.preventDefault();
-          if (isAuthenticated) logout();
-          navigate(`/login?email=${encodeURIComponent(dashboard.email)}&redirect=/`);
-        }}
-        className="w-full h-full flex items-center justify-center"
-      >
-        {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
-        <ChevronRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
-      </Link>
-    </Button>
-
-    <p className="text-center text-xs text-gray-500 mt-3">
-      {dashboard.email}
-    </p>
-  </CardContent>
-</Card>
+export default LandingPage;
