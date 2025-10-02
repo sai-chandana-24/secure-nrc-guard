@@ -65,7 +65,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={isAuthenticated ? getDashboardComponent() : <LandingPage />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />} />
       <Route path="/home" element={<LandingPage />} />
       <Route path="/main" element={<LandingPage />} />
       <Route path="/landing" element={<LandingPage />} />
