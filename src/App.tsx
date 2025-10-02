@@ -32,11 +32,11 @@ function AppRoutes() {
     );
   }
 
-  if (!isAuthenticated) {
-    // Check if we're on the login route
-    if (window.location.pathname === '/login') {
-      return <LoginPage />;
-    }
+  // Public routes that don't require authentication
+  const publicRoutes = ['/home', '/main', '/landing', '/login'];
+  const isPublicRoute = publicRoutes.includes(window.location.pathname);
+
+  if (!isAuthenticated && !isPublicRoute) {
     return <LandingPage />;
   }
 
@@ -64,8 +64,8 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/" element={getDashboardComponent()} />
-      <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />} />
+      <Route path="/" element={isAuthenticated ? getDashboardComponent() : <LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/home" element={<LandingPage />} />
       <Route path="/main" element={<LandingPage />} />
       <Route path="/landing" element={<LandingPage />} />

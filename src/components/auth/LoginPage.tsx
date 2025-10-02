@@ -36,12 +36,10 @@ export function LoginPage() {
 
     const success = await login(email, password);
     if (success) {
-      const redirect = searchParams.get('redirect') || '/';
-      navigate(redirect, { replace: true });
+      navigate('/', { replace: true });
       return;
     }
     setError('Invalid credentials. Please check your email and password.');
-    // Login success is handled by the AuthContext which will redirect automatically
   };
 
   return (
