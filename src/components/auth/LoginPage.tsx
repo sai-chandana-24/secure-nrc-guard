@@ -12,8 +12,11 @@ import digitalIndiaLogo from '@/assets/digital-india-logo.png';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export function LoginPage() {
+  const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const { login, isLoading } = useAuth();
@@ -31,6 +34,24 @@ export function LoginPage() {
 
     if (!email || !password) {
       setError('Please enter both email and password');
+      return;
+    }
+
+    if (mode === 'signup') {
+      if (!name) {
+        setError('Please enter your full name');
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError('Passwords do not match');
+        return;
+      }
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters');
+        return;
+      }
+      setError('Sign up successful! Please login with your credentials.');
+      setMode('login');
       return;
     }
 
@@ -154,7 +175,7 @@ export function LoginPage() {
             </div>
           </div>
 
-          {/* Login Card */}
+          {/* Login/Signup Card */}
           <Card className="govt-shadow-lg border-0 bg-card/95 backdrop-blur-sm">
             <CardHeader className="text-center space-y-1">
               <div className="flex justify-center mb-4">
@@ -162,17 +183,55 @@ export function LoginPage() {
                   <Shield className="w-8 h-8 text-primary" />
                 </div>
               </div>
-              <CardTitle className="text-2xl font-bold text-primary">Secure Access Portal</CardTitle>
+              <CardTitle className="text-2xl font-bold text-primary">
+                {mode === 'login' ? 'Secure Access Portal' : 'Create New Account'}
+              </CardTitle>
               <CardDescription className="text-base">
-                Enter your government credentials to access the administration dashboard
+                {mode === 'login' 
+                  ? 'Enter your government credentials to access the administration dashboard'
+                  : 'Register for a new government account with official credentials'}
               </CardDescription>
+              {/* Mode Toggle */}
+              <div className="flex gap-2 pt-4">
+                <Button
+                  type="button"
+                  variant={mode === 'login' ? 'default' : 'outline'}
+                  className="flex-1"
+                  onClick={() => { setMode('login'); setError(''); }}
+                >
+                  Login
+                </Button>
+                <Button
+                  type="button"
+                  variant={mode === 'signup' ? 'default' : 'outline'}
+                  className="flex-1"
+                  onClick={() => { setMode('signup'); setError(''); }}
+                >
+                  Sign Up
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="space-y-6">
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                  <Alert variant="destructive">
+                  <Alert variant={error.includes('successful') ? 'default' : 'destructive'}>
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
+                )}
+
+                {mode === 'signup' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="Enter your full name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="h-12 govt-transition focus:govt-shadow-glow border-2"
+                      required
+                    />
+                  </div>
                 )}
 
                 <div className="space-y-2">
@@ -214,21 +273,36 @@ export function LoginPage() {
                   </div>
                 </div>
 
+                {mode === 'signup' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password</Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="Re-enter your password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="h-12 govt-transition focus:govt-shadow-glow border-2"
+                      required
+                    />
+                  </div>
+                )}
+
                 <Button
                   type="submit"
-                  className="w-full h-12 text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                  className="w-full h-12 text-base govt-gradient hover:opacity-90 text-white"
                   size="lg"
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      Authenticating...
+                      {mode === 'login' ? 'Authenticating...' : 'Creating Account...'}
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
                       <Shield className="w-4 h-4" />
-                      Secure Login
+                      {mode === 'login' ? 'Secure Login' : 'Create Account'}
                     </div>
                   )}
                 </Button>
@@ -254,23 +328,25 @@ export function LoginPage() {
                 </div>
               </div>
 
-              {/* Demo Credentials */}
-              <div className="p-4 bg-muted/30 rounded-lg border border-primary/20">
-                <h4 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
-                  <Shield className="w-4 h-4" />
-                  Demo Access Credentials
-                </h4>
-                <div className="grid grid-cols-1 gap-2 text-xs">
-                  <p><strong>Admin:</strong> admin@chhattisgarh.gov.in</p>
-                  <p><strong>District Officer:</strong> district@chhattisgarh.gov.in</p>
-                  <p><strong>Block Officer:</strong> block@chhattisgarh.gov.in</p>
-                  <p><strong>Supervisor:</strong> supervisor@chhattisgarh.gov.in</p>
-                  <p><strong>Teacher:</strong> teacher@chhattisgarh.gov.in</p>
-                  <p><strong>NRC Officer:</strong> nrc@chhattisgarh.gov.in</p>
-                  <p><strong>Public Access:</strong> public@example.com</p>
-                  <p className="text-primary font-semibold mt-2">Password: admin123 (for all accounts)</p>
+              {/* Demo Credentials - Only show in login mode */}
+              {mode === 'login' && (
+                <div className="p-4 bg-muted/30 rounded-lg border border-primary/20">
+                  <h4 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Demo Access Credentials
+                  </h4>
+                  <div className="grid grid-cols-1 gap-2 text-xs">
+                    <p><strong>Admin:</strong> admin@chhattisgarh.gov.in</p>
+                    <p><strong>District Officer:</strong> district@chhattisgarh.gov.in</p>
+                    <p><strong>Block Officer:</strong> block@chhattisgarh.gov.in</p>
+                    <p><strong>Supervisor:</strong> supervisor@chhattisgarh.gov.in</p>
+                    <p><strong>Teacher:</strong> teacher@chhattisgarh.gov.in</p>
+                    <p><strong>NRC Officer:</strong> nrc@chhattisgarh.gov.in</p>
+                    <p><strong>Public Access:</strong> public@example.com</p>
+                    <p className="text-primary font-semibold mt-2">Password: admin123 (for all accounts)</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
