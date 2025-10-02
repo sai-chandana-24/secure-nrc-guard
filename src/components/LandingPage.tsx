@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -265,13 +265,21 @@ export const LandingPage = () => {
                     {/* Button Section */}
                     <div className="flex-shrink-0 w-full md:w-auto">
                       <Button
+                        asChild
                         type="button"
                         size="lg"
                         className={`w-full md:w-auto bg-gradient-to-r ${dashboard.bgGradient} hover:opacity-90 text-white font-semibold px-8 py-6 rounded-lg govt-transition group-hover:shadow-xl text-base md:text-lg`}
-                        onClick={() => handleDashboardClick(dashboard.email)}
                       >
-                        {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
-                        <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 govt-transition" />
+                        <Link
+                          to={`/login?email=${encodeURIComponent(dashboard.email)}&redirect=/`}
+                          onClick={() => {
+                            if (isAuthenticated) logout();
+                          }}
+                          aria-label={`Login to access ${dashboard.title}`}
+                        >
+                          {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
+                          <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 govt-transition" />
+                        </Link>
                       </Button>
                     </div>
                   </div>
