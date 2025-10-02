@@ -29,16 +29,15 @@ import digitalIndiaLogo from '@/assets/digital-india-logo.png';
 
 export const LandingPage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const [language, setLanguage] = useState<'en' | 'hi'>('en');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleDashboardClick = (role: string, email: string) => {
     if (isAuthenticated) {
-      navigate('/');
-    } else {
-      navigate(`/login?email=${encodeURIComponent(email)}&redirect=/`);
+      logout();
     }
+    navigate(`/login?email=${encodeURIComponent(email)}&redirect=/`);
   };
 
   const dashboards = [
