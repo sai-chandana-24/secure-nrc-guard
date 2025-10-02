@@ -227,8 +227,8 @@ export const LandingPage = () => {
               return (
                 <Card
                   key={index}
-                  className="group relative overflow-hidden border-2 border-border bg-card hover:border-primary govt-transition hover:shadow-2xl cursor-pointer"
-                  onClick={() => handleDashboardClick(dashboard.email)}
+                  className="group relative overflow-hidden border-2 border-border bg-card hover:border-primary govt-transition hover:shadow-2xl animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${dashboard.bgGradient} opacity-0 group-hover:opacity-5 govt-transition`} />
                   <CardHeader className="relative pb-4">
@@ -252,11 +252,9 @@ export const LandingPage = () => {
                       ))}
                     </div>
                     <Button
+                      type="button"
                       className={`w-full bg-gradient-to-r ${dashboard.bgGradient} hover:opacity-90 text-white font-semibold py-5 md:py-6 rounded-lg govt-transition group-hover:shadow-lg text-sm md:text-base`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDashboardClick(dashboard.email);
-                      }}
+                      onClick={() => handleDashboardClick(dashboard.email)}
                     >
                       {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
                       <ChevronRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 govt-transition" />
@@ -288,6 +286,133 @@ export const LandingPage = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      {/* Key Features Section */}
+      <section className="py-16 md:py-20 bg-secondary/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              {language === 'hi' ? 'प्रमुख विशेषताएं' : 'Key Features'}
+            </h2>
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+              {language === 'hi' ? 'उन्नत तकनीकों के साथ बाल पोषण प्रबंधन' : 'Advanced child nutrition management with cutting-edge technology'}
+            </p>
+            <div className="w-24 h-1 govt-gradient mx-auto rounded mt-4"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {[
+              {
+                icon: Shield,
+                title: language === 'hi' ? 'सुरक्षित डेटा' : 'Secure Data',
+                description: language === 'hi' ? 'ब्लॉकचेन-आधारित डेटा सुरक्षा' : 'Blockchain-based data security'
+              },
+              {
+                icon: Activity,
+                title: language === 'hi' ? 'रीयल-टाइम ट्रैकिंग' : 'Real-time Tracking',
+                description: language === 'hi' ? 'लाइव डैशबोर्ड और अलर्ट' : 'Live dashboards and alerts'
+              },
+              {
+                icon: Globe,
+                title: language === 'hi' ? 'क्लाउड-आधारित' : 'Cloud-based',
+                description: language === 'hi' ? 'कहीं से भी पहुंच' : 'Access from anywhere'
+              },
+              {
+                icon: CheckCircle,
+                title: language === 'hi' ? 'पारदर्शिता' : 'Transparency',
+                description: language === 'hi' ? 'पूर्ण ऑडिट ट्रेल' : 'Complete audit trail'
+              }
+            ].map((feature, index) => {
+              const FeatureIcon = feature.icon;
+              return (
+                <Card key={index} className="text-center hover:shadow-xl govt-transition border-0 govt-shadow-md animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <CardContent className="pt-8 pb-8">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full govt-gradient flex items-center justify-center">
+                      <FeatureIcon className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-lg md:text-xl font-bold text-foreground mb-2">{feature.title}</h3>
+                    <p className="text-sm text-muted-foreground">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Government Initiatives Section */}
+      <section className="py-16 md:py-20 bg-card">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge className="bg-success text-success-foreground mb-4">
+                {language === 'hi' ? 'सरकारी पहल' : 'Government Initiative'}
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+                {language === 'hi' ? 'राष्ट्रीय पोषण मिशन' : 'National Nutrition Mission'}
+              </h2>
+              <p className="text-muted-foreground text-base md:text-lg mb-6 leading-relaxed">
+                {language === 'hi' 
+                  ? 'छत्तीसगढ़ सरकार बच्चों के स्वास्थ्य और पोषण की स्थिति में सुधार के लिए प्रतिबद्ध है। यह डिजिटल प्लेटफॉर्म राज्य भर में पोषण पुनर्वास केंद्रों की निगरानी और प्रबंधन को सक्षम बनाता है।'
+                  : 'The Government of Chhattisgarh is committed to improving child health and nutrition status. This digital platform enables monitoring and management of Nutrition Rehabilitation Centers across the state.'}
+              </p>
+              <ul className="space-y-3 mb-8">
+                {[
+                  language === 'hi' ? 'डेटा-संचालित निर्णय लेना' : 'Data-driven decision making',
+                  language === 'hi' ? 'बेहतर समन्वय और संचार' : 'Better coordination and communication',
+                  language === 'hi' ? 'पारदर्शी फंड आवंटन' : 'Transparent fund allocation',
+                  language === 'hi' ? 'बढ़ी हुई जवाबदेही' : 'Enhanced accountability'
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-success mt-0.5 flex-shrink-0" />
+                    <span className="text-foreground">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="relative">
+              <div className="aspect-video rounded-xl overflow-hidden govt-shadow-lg border-4 border-primary/20">
+                <div className="w-full h-full govt-gradient flex items-center justify-center">
+                  <div className="text-center text-white p-8">
+                    <Hospital className="w-24 h-24 mx-auto mb-4 opacity-80" />
+                    <h3 className="text-2xl font-bold mb-2">
+                      {language === 'hi' ? '156+ सक्रिय केंद्र' : '156+ Active Centers'}
+                    </h3>
+                    <p className="text-white/90">
+                      {language === 'hi' ? 'पूरे छत्तीसगढ़ में' : 'Across Chhattisgarh'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 govt-accent-gradient rounded-full opacity-20 blur-2xl"></div>
+              <div className="absolute -top-6 -left-6 w-24 h-24 govt-gradient rounded-full opacity-20 blur-2xl"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Access Notice */}
+      <section className="py-12 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 text-center">
+          <h3 className="text-2xl md:text-3xl font-bold mb-4">
+            {language === 'hi' ? 'तत्काल सहायता की आवश्यकता है?' : 'Need Immediate Assistance?'}
+          </h3>
+          <p className="text-base md:text-lg mb-6 opacity-90">
+            {language === 'hi' 
+              ? 'हमारी टीम 24/7 आपकी सहायता के लिए उपलब्ध है'
+              : 'Our support team is available 24/7 to assist you'}
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <a href="tel:18001234567" className="flex items-center gap-2 bg-card text-foreground px-6 py-3 rounded-lg hover:shadow-lg govt-transition font-semibold">
+              <Phone className="w-5 h-5" />
+              1800-123-4567
+            </a>
+            <a href="mailto:support@chhattisgarh.gov.in" className="flex items-center gap-2 bg-card text-foreground px-6 py-3 rounded-lg hover:shadow-lg govt-transition font-semibold">
+              <Mail className="w-5 h-5" />
+              {language === 'hi' ? 'ईमेल सहायता' : 'Email Support'}
+            </a>
+          </div>
         </div>
       </section>
 
