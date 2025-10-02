@@ -6,8 +6,20 @@ import { Badge } from '@/components/ui/badge';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { UserProfile } from '@/components/auth/UserProfile';
 import chhattishgarhLogo from '@/assets/chhattisgarh-logo.png';
-
+import { toast } from '@/components/ui/use-toast';
 export function DashboardHeader() {
+  const [query, setQuery] = React.useState('');
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const handleSearch = () => {
+    if (query.trim()) {
+      toast({ description: `Searching for "${query}"` });
+    } else {
+      inputRef.current?.focus();
+    }
+  };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') handleSearch();
+  };
   return (
     <header className="bg-card border-b govt-shadow-sm sticky top-0 z-50">
       <div className="flex items-center justify-between h-16 px-6">
@@ -30,10 +42,21 @@ export function DashboardHeader() {
         {/* Center Section - Search */}
         <div className="flex-1 max-w-md mx-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <button
+              type="button"
+              onClick={handleSearch}
+              aria-label="Search"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            >
+              <Search className="w-4 h-4" />
+            </button>
             <Input 
+              ref={inputRef}
               placeholder="Search funds, districts, reports..." 
               className="pl-10 govt-transition focus:govt-shadow-glow"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
           </div>
         </div>

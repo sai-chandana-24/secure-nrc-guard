@@ -230,7 +230,7 @@ export const LandingPage = () => {
                   className="group relative overflow-hidden bg-card border-2 border-border hover:border-primary rounded-xl p-6 md:p-8 govt-transition hover:shadow-2xl animate-fade-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-r ${dashboard.bgGradient} opacity-0 group-hover:opacity-5 govt-transition`} />
+                  <div className={`absolute inset-0 bg-gradient-to-r ${dashboard.bgGradient} opacity-0 group-hover:opacity-5 govt-transition pointer-events-none`} />
                   
                   <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6">
                     {/* Icon Section */}

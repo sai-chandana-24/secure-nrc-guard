@@ -17,13 +17,16 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import adminProfilePhoto from '@/assets/admin-profile.jpg';
-
+import avatarMale from '@/assets/avatar-male.png';
+import avatarFemale from '@/assets/avatar-female.png';
 export function UserProfile() {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
   if (!user) return null;
 
+  const isFemale = /^(mrs|ms)\.?(\s|$)/i.test(user.name) || /Mrs\.|Ms\./i.test(user.name);
+  const profileSrc = isFemale ? avatarFemale : avatarMale;
   const getRoleBadge = (role: string) => {
     switch (role) {
       case 'admin':
@@ -51,8 +54,9 @@ export function UserProfile() {
         <Button variant="ghost" size="sm" className="gap-2 h-auto p-2">
           <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-primary/20">
             <img 
-              src={adminProfilePhoto} 
+              src={profileSrc}
               alt={user.name}
+              onError={(e) => { (e.currentTarget as HTMLImageElement).src = adminProfilePhoto; }}
               className="w-full h-full object-cover"
             />
           </div>
@@ -79,8 +83,9 @@ export function UserProfile() {
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-full overflow-hidden border-3 border-primary/20 govt-shadow-md">
               <img 
-                src={adminProfilePhoto} 
+                src={profileSrc}
                 alt={user.name}
+                onError={(e) => { (e.currentTarget as HTMLImageElement).src = adminProfilePhoto; }}
                 className="w-full h-full object-cover"
               />
             </div>
