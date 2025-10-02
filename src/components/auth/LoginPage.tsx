@@ -36,7 +36,8 @@ export function LoginPage() {
 
     const success = await login(email, password);
     if (success) {
-      navigate('/', { replace: true });
+      const redirect = searchParams.get('redirect') || '/';
+      navigate(redirect, { replace: true });
       return;
     }
     setError('Invalid credentials. Please check your email and password.');

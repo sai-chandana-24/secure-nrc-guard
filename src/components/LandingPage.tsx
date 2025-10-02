@@ -313,6 +313,8 @@ export const LandingPage = () => {
 
                     <Button 
                       className={`w-full bg-gradient-to-r ${dashboard.bgGradient} hover:opacity-90 text-white font-semibold py-5 md:py-6 rounded-lg transition-all duration-300 group-hover:shadow-lg text-sm md:text-base`}
+                      onClick={(e) => { e.stopPropagation(); handleDashboardClick(dashboard.role, dashboard.email); }}
+                      aria-label={`Login to access ${dashboard.title}`}
                     >
                       {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
                       <ChevronRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
