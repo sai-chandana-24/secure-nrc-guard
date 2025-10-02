@@ -6,13 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { UserProfile } from '@/components/auth/UserProfile';
 import chhattishgarhLogo from '@/assets/chhattisgarh-logo.png';
-import { toast } from '@/components/ui/use-toast';
+import { useNavigate } from 'react-router-dom';
 export function DashboardHeader() {
+  const navigate = useNavigate();
   const [query, setQuery] = React.useState('');
   const inputRef = React.useRef<HTMLInputElement>(null);
   const handleSearch = () => {
     if (query.trim()) {
-      toast({ description: `Searching for "${query}"` });
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
     } else {
       inputRef.current?.focus();
     }
@@ -28,11 +29,11 @@ export function DashboardHeader() {
           <SidebarTrigger className="p-2 hover:bg-muted rounded-md govt-transition" />
           <div className="hidden md:flex items-center gap-3">
             <img src={chhattishgarhLogo} alt="Chhattisgarh Government Logo" className="h-10" />
-            <div>
-              <h1 className="text-lg font-semibold text-primary">
+            <div className="leading-tight text-left">
+              <h1 className="text-lg font-semibold text-primary leading-tight">
                 NRC E-Finance Portal
               </h1>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground leading-tight">
                 Government of Chhattisgarh - Nutritional Rehabilitation Centers
               </p>
             </div>

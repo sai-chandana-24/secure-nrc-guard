@@ -15,6 +15,9 @@ import TeacherDashboard from "./pages/TeacherDashboard";
 import NRCDashboard from "./pages/NRCDashboard";
 import PublicDashboard from "./pages/PublicDashboard";
 import NotFound from "./pages/NotFound";
+import AlertsPage from "./pages/AlertsPage";
+import SupportPage from "./pages/SupportPage";
+import SearchPage from "./pages/SearchPage";
 
 const queryClient = new QueryClient();
 
@@ -75,8 +78,9 @@ function AppRoutes() {
       <Route path="/users" element={getDashboardComponent()} />
       <Route path="/audit" element={getDashboardComponent()} />
       <Route path="/reports" element={getDashboardComponent()} />
-      <Route path="/alerts" element={getDashboardComponent()} />
-      <Route path="/support" element={getDashboardComponent()} />
+      <Route path="/alerts" element={<AlertsPage />} />
+      <Route path="/support" element={<SupportPage />} />
+      <Route path="/search" element={<SearchPage />} />
       <Route path="/settings" element={<SettingsPage />} />
       {/* Additional navigation routes */}
       <Route path="/nrc" element={getDashboardComponent()} />

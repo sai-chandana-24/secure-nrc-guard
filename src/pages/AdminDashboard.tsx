@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { DashboardStats } from '@/components/dashboard/DashboardStats';
 import { FundAllocationModule } from '@/components/dashboard/FundAllocationModule';
@@ -65,6 +66,7 @@ const quickActions = [
 ];
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const getAlertIcon = (type: string) => {
     switch (type) {
       case 'success':
@@ -141,6 +143,11 @@ export default function AdminDashboard() {
                     key={index}
                     variant={action.variant}
                     className="w-full justify-start gap-3 h-auto p-4"
+                    onClick={() => {
+                      if (action.title === 'New Fund Allocation') navigate('/fund-allocation');
+                      else if (action.title === 'User Management') navigate('/users');
+                      else if (action.title === 'Generate Reports') navigate('/reports');
+                    }}
                   >
                     <action.icon className="w-5 h-5 shrink-0" />
                     <div className="text-left">
@@ -176,7 +183,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={() => navigate('/alerts')}>
                   View All Alerts
                 </Button>
               </CardContent>
