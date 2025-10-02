@@ -19,7 +19,8 @@ export function LoginPage() {
   const [name, setName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const { login, isLoading } = useAuth();
+  const [success, setSuccess] = useState('');
+  const { login, signup, isLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -31,6 +32,7 @@ export function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
 
     if (!email || !password) {
       setError('Please enter both email and password');
@@ -50,13 +52,23 @@ export function LoginPage() {
         setError('Password must be at least 6 characters');
         return;
       }
-      setError('Sign up successful! Please login with your credentials.');
-      setMode('login');
-      return;
+      
+      const result = await signup(email, password, name);
+      if (result.success) {
+        setSuccess('Account created successfully! You can now login.');
+        setMode('login');
+        setPassword('');
+        setConfirmPassword('');
+        setName('');
+        return;
+      } else {
+        setError(result.error || 'Signup failed. Please try again.');
+        return;
+      }
     }
 
-    const success = await login(email, password);
-    if (success) {
+    const loginSuccess = await login(email, password);
+    if (loginSuccess) {
       const redirect = searchParams.get('redirect') || '/';
       navigate(redirect, { replace: true });
       return;
@@ -214,8 +226,13 @@ export function LoginPage() {
             <CardContent className="space-y-6">
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                  <Alert variant={error.includes('successful') ? 'default' : 'destructive'}>
+                  <Alert variant="destructive">
                     <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+                {success && (
+                  <Alert className="bg-success/10 border-success text-success">
+                    <AlertDescription>{success}</AlertDescription>
                   </Alert>
                 )}
 

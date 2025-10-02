@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import type { Session } from '@supabase/supabase-js';
 
 export interface User {
   id: string;
@@ -19,8 +21,10 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
+  session: Session | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
+  signup: (email: string, password: string, fullName: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateProfile: (userData: Partial<User>) => void;
   isLoading: boolean;
@@ -30,162 +34,172 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        
+        if (session?.user) {
+          // Defer fetching profile to avoid blocking
+          setTimeout(async () => {
+            await fetchUserProfile(session.user.id);
+          }, 0);
+        } else {
+          setUser(null);
+        }
+      }
+    );
+
     // Check for existing session
-    const savedUser = localStorage.getItem('nrc_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-    setIsLoading(false);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      // Fetch profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+
+      // Fetch roles
+      const { data: userRoles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId);
+
+      const role = userRoles?.[0]?.role || 'public';
+
+      if (profile) {
+        setUser({
+          id: profile.id,
+          name: profile.full_name,
+          email: profile.email,
+          role: role as any,
+          department: profile.department || 'NRC Department',
+          designation: profile.designation || 'Government Official',
+          profilePhoto: '/src/assets/admin-profile.jpg',
+          phone: profile.phone || '',
+          district: profile.district,
+          permissions: [role],
+          lastLogin: new Date().toISOString(),
+          isActive: true,
+          location: profile.district || 'Chhattisgarh'
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     
-    // Mock authentication - replace with real authentication logic
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Mock users for different roles
-    const mockUsers: { [key: string]: User } = {
-      'admin@chhattisgarh.gov.in': {
-        id: '1',
-        name: 'Dr. Rajesh Kumar Sharma',
-        email: 'admin@chhattisgarh.gov.in',
-        role: 'admin',
-        department: 'State NRC Administration',
-        designation: 'State Program Director',
-        profilePhoto: '/src/assets/admin-profile.jpg',
-        phone: '+91-9876543210',
-        district: 'Raipur',
-        permissions: ['all'],
-        lastLogin: '2024-01-19 09:30:00',
-        isActive: true,
-        avatar: '/src/assets/admin-profile.jpg',
-        location: 'Raipur, Chhattisgarh'
-      },
-      'district@chhattisgarh.gov.in': {
-        id: '2',
-        name: 'Mrs. Sunita Verma',
-        email: 'district@chhattisgarh.gov.in',
-        role: 'district',
-        department: 'District Health Office',
-        designation: 'District Officer',
-        profilePhoto: '/src/assets/admin-profile.jpg',
-        phone: '+91-9876543211',
-        district: 'Raipur',
-        permissions: ['district_management'],
-        lastLogin: '2024-01-19 08:15:00',
-        isActive: true,
-        location: 'Raipur District'
-      },
-      'block@chhattisgarh.gov.in': {
-        id: '3',
-        name: 'Mr. Prakash Singh',
-        email: 'block@chhattisgarh.gov.in',
-        role: 'block',
-        department: 'Block Development Office',
-        designation: 'Block Officer',
-        profilePhoto: '/src/assets/admin-profile.jpg',
-        phone: '+91-9876543212',
-        district: 'Raipur',
-        permissions: ['block_management'],
-        lastLogin: '2024-01-19 07:45:00',
-        isActive: true,
-        location: 'Raipur Block'
-      },
-      'supervisor@chhattisgarh.gov.in': {
-        id: '4',
-        name: 'Mrs. Meera Patel',
-        email: 'supervisor@chhattisgarh.gov.in',
-        role: 'supervisor',
-        department: 'Field Supervision',
-        designation: 'Supervisor',
-        profilePhoto: '/src/assets/admin-profile.jpg',
-        phone: '+91-9876543213',
-        district: 'Raipur',
-        permissions: ['supervisor_access'],
-        lastLogin: '2024-01-19 06:30:00',
-        isActive: true,
-        location: 'Raipur Block'
-      },
-      'teacher@chhattisgarh.gov.in': {
-        id: '5',
-        name: 'Ms. Kamala Bai',
-        email: 'teacher@chhattisgarh.gov.in',
-        role: 'teacher',
-        department: 'Anganwadi Center',
-        designation: 'Anganwadi Teacher',
-        profilePhoto: '/src/assets/admin-profile.jpg',
-        phone: '+91-9876543214',
-        district: 'Raipur',
-        permissions: ['data_entry'],
-        lastLogin: '2024-01-19 05:15:00',
-        isActive: true,
-        location: 'AWC Raipur-001'
-      },
-      'nrc@chhattisgarh.gov.in': {
-        id: '6',
-        name: 'Dr. Ravi Kumar',
-        email: 'nrc@chhattisgarh.gov.in',
-        role: 'nrc',
-        department: 'NRC Medical Team',
-        designation: 'NRC Medical Officer',
-        profilePhoto: '/src/assets/admin-profile.jpg',
-        phone: '+91-9876543215',
-        district: 'Raipur',
-        permissions: ['nrc_management'],
-        lastLogin: '2024-01-19 04:00:00',
-        isActive: true,
-        location: 'NRC Raipur'
-      },
-      'public@example.com': {
-        id: '7',
-        name: 'General Public',
-        email: 'public@example.com',
-        role: 'public',
-        department: 'Public Access',
-        designation: 'Citizen',
-        profilePhoto: '/src/assets/admin-profile.jpg',
-        phone: '+91-9876543216',
-        district: 'Chhattisgarh',
-        permissions: ['public_view'],
-        lastLogin: '2024-01-19 03:30:00',
-        isActive: true,
-        location: 'Chhattisgarh'
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      if (data.session) {
+        setSession(data.session);
+        await fetchUserProfile(data.user.id);
+        return true;
       }
-    };
-    
-    const user = mockUsers[email];
-    if (user && password === 'admin123') {
-      setUser(user);
-      localStorage.setItem('nrc_user', JSON.stringify(user));
+      
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    } finally {
       setIsLoading(false);
-      return true;
     }
+  };
+
+  const signup = async (email: string, password: string, fullName: string): Promise<{ success: boolean; error?: string }> => {
+    setIsLoading(true);
     
-    setIsLoading(false);
-    return false;
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            designation: 'Government Official',
+            department: 'NRC Department'
+          },
+          emailRedirectTo: `${window.location.origin}/`
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        return { success: true };
+      }
+      
+      return { success: false, error: 'Signup failed' };
+    } catch (error: any) {
+      console.error('Signup error:', error);
+      return { success: false, error: error.message || 'Signup failed' };
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    localStorage.removeItem('nrc_user');
+    setSession(null);
   };
 
-  const updateProfile = (userData: Partial<User>) => {
-    if (user) {
-      const updatedUser = { ...user, ...userData };
-      setUser(updatedUser);
-      localStorage.setItem('nrc_user', JSON.stringify(updatedUser));
+  const updateProfile = async (userData: Partial<User>) => {
+    if (user && session) {
+      try {
+        await supabase
+          .from('profiles')
+          .update({
+            full_name: userData.name,
+            phone: userData.phone,
+            designation: userData.designation,
+            department: userData.department,
+            district: userData.district
+          })
+          .eq('id', user.id);
+        
+        const updatedUser = { ...user, ...userData };
+        setUser(updatedUser);
+      } catch (error) {
+        console.error('Error updating profile:', error);
+      }
     }
   };
 
   const value = {
     user,
-    isAuthenticated: !!user,
+    session,
+    isAuthenticated: !!user && !!session,
     login,
+    signup,
     logout,
     updateProfile,
     isLoading
