@@ -37,7 +37,7 @@ export const LandingPage = () => {
     if (isAuthenticated) {
       navigate('/');
     } else {
-      navigate(`/login?email=${encodeURIComponent(email)}`);
+      navigate(`/login?email=${encodeURIComponent(email)}&redirect=/`);
     }
   };
 
