@@ -1,453 +1,51 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from '@/components/ui/badge';
-import { 
-  Shield, 
-  Building2, 
-  MapPin, 
-  Users, 
-  Heart, 
-  Hospital,
-  ChevronRight,
-  Globe,
-  TrendingUp,
-  Activity,
-  Phone,
-  Mail,
-  Star,
-  CheckCircle,
-  ExternalLink,
-  Menu,
-  X
-} from 'lucide-react';
-import chhattishgarhLogo from '@/assets/chhattisgarh-logo.png';
-import indiaEmblem from '@/assets/india-emblem.png';
-import digitalIndiaLogo from '@/assets/digital-india-logo.png';
+<Card 
+  key={index}
+  className="group relative overflow-hidden border-2 border-gray-200 bg-white hover:border-blue-500 transition-all duration-300 hover:shadow-2xl cursor-pointer"
+>
+  <div className={`absolute inset-0 bg-gradient-to-br ${dashboard.bgGradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
 
-export const LandingPage = () => {
-  const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
-  const [language, setLanguage] = useState<'en' | 'hi'>('en');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleDashboardClick = (role: string, email: string) => {
-    if (isAuthenticated) {
-      logout();
-    }
-    navigate(`/login?email=${encodeURIComponent(email)}&redirect=/`);
-  };
-
-  const dashboards = [
-    {
-      title: language === 'hi' ? 'राज्य प्रशासक' : 'State Administrator',
-      description: language === 'hi' 
-        ? 'राज्य स्तरीय NRC कार्यक्रम प्रबंधन और निगरानी'
-        : 'State-level NRC program management and oversight',
-      icon: Shield,
-      email: 'admin@chhattisgarh.gov.in',
-      role: 'admin',
-      bgGradient: 'from-blue-600 to-blue-800',
-      stats: { centers: '100+', districts: '28', staff: '5000+' }
-    },
-    {
-      title: language === 'hi' ? 'जिला अधिकारी' : 'District Officer',
-      description: language === 'hi'
-        ? 'जिला स्तरीय NRC संचालन और समन्वय'
-        : 'District-level NRC operations and coordination',
-      icon: Building2,
-      email: 'district@chhattisgarh.gov.in',
-      role: 'district',
-      bgGradient: 'from-green-600 to-green-800',
-      stats: { blocks: '15+', centers: '200+', staff: '500+' }
-    },
-    {
-      title: language === 'hi' ? 'ब्लॉक अधिकारी' : 'Block Officer',
-      description: language === 'hi'
-        ? 'ब्लॉक स्तरीय कार्यान्वयन और डेटा संग्रह'
-        : 'Block-level implementation and data collection',
-      icon: MapPin,
-      email: 'block@chhattisgarh.gov.in',
-      role: 'block',
-      bgGradient: 'from-purple-600 to-purple-800',
-      stats: { centers: '50+', children: '1000+', workers: '100+' }
-    },
-    {
-      title: language === 'hi' ? 'पर्यवेक्षक' : 'Supervisor',
-      description: language === 'hi'
-        ? 'क्षेत्र पर्यवेक्षण और गुणवत्ता आश्वासन'
-        : 'Field supervision and quality assurance',
-      icon: Users,
-      email: 'supervisor@chhattisgarh.gov.in',
-      role: 'supervisor',
-      bgGradient: 'from-orange-600 to-orange-800',
-      stats: { centers: '20+', visits: '100+', reports: '500+' }
-    },
-    {
-      title: language === 'hi' ? 'आंगनवाड़ी शिक्षक' : 'Anganwadi Teacher',
-      description: language === 'hi'
-        ? 'बाल देखभाल डेटा प्रविष्टि और रिपोर्टिंग'
-        : 'Child care data entry and reporting',
-      icon: Heart,
-      email: 'teacher@chhattisgarh.gov.in',
-      role: 'teacher',
-      bgGradient: 'from-pink-600 to-pink-800',
-      stats: { children: '50+', records: '200+', updates: 'Daily' }
-    },
-    {
-      title: language === 'hi' ? 'NRC चिकित्सा अधिकारी' : 'NRC Medical Officer',
-      description: language === 'hi'
-        ? 'पोषण पुनर्वास केंद्र प्रबंधन'
-        : 'Nutrition Rehabilitation Center management',
-      icon: Hospital,
-      email: 'nrc@chhattisgarh.gov.in',
-      role: 'nrc',
-      bgGradient: 'from-red-600 to-red-800',
-      stats: { admissions: '100+', recovery: '95%', beds: '50+' }
-    }
-  ];
-
-  const stats = [
-    { 
-      label: language === 'hi' ? 'कुल बच्चे' : 'Total Children', 
-      value: '2,45,678', 
-      trend: '+12%',
-      icon: Users 
-    },
-    { 
-      label: language === 'hi' ? 'सक्रिय केंद्र' : 'Active Centers', 
-      value: '156', 
-      trend: '+8%',
-      icon: Heart 
-    },
-    { 
-      label: language === 'hi' ? 'आवंटित फंड' : 'Funds Allocated', 
-      value: '₹45.2Cr', 
-      trend: '+15%',
-      icon: TrendingUp 
-    },
-    { 
-      label: language === 'hi' ? 'सफलता दर' : 'Success Rate', 
-      value: '89.5%', 
-      trend: '+3%',
-      icon: Activity 
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-      {/* Professional Government Header */}
-      <header className="bg-white shadow-md border-b-4 border-orange-500 sticky top-0 z-50">
-        <div className="container mx-auto px-4">
-          {/* Top Bar */}
-          <div className="flex items-center justify-between py-2 border-b border-gray-200 text-sm">
-            <div className="flex items-center gap-4 text-gray-600">
-              <span className="hidden md:inline">Last Updated: {new Date().toLocaleDateString('en-IN')}</span>
-              <span className="hidden md:inline">•</span>
-              <span className="hidden md:inline">Screen Reader Access</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant={language === 'en' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setLanguage('en')}
-                className="text-xs h-7 px-2"
-              >
-                English
-              </Button>
-              <Button
-                variant={language === 'hi' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setLanguage('hi')}
-                className="text-xs h-7 px-2"
-              >
-                हिन्दी
-              </Button>
-            </div>
-          </div>
-
-          {/* Main Header */}
-          <div className="flex items-center justify-between py-4">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3">
-                <img src={indiaEmblem} alt="Government of India" className="h-14 md:h-16" />
-                <img src={chhattishgarhLogo} alt="Chhattisgarh Government" className="h-14 md:h-16" />
-              </div>
-              <div className="border-l-2 border-gray-300 pl-4">
-                <h1 className="text-base md:text-xl font-bold text-blue-900 leading-tight">
-                  {language === 'hi' ? 'छत्तीसगढ़ पोषणीय पुनर्वास केंद्र' : 'Chhattisgarh Nutrition Rehabilitation Centers'}
-                </h1>
-                <p className="text-xs md:text-sm text-gray-600 leading-tight">
-                  {language === 'hi' ? 'छत्तीसगढ़ सरकार - डिजिटल प्रबंधन प्रणाली' : 'Government of Chhattisgarh - Digital Management System'}
-                </p>
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge className="bg-green-100 text-green-800 text-xs">Digital India</Badge>
-                  <Badge className="bg-blue-100 text-blue-800 text-xs hidden md:inline-flex">Blockchain Secured</Badge>
-                </div>
-              </div>
-            </div>
-            
-            <button 
-              className="md:hidden p-2"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative py-16 md:py-24 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE2YzAgMy4zMTQtMi42ODYgNi02IDZzLTYtMi42ODYtNi02IDIuNjg2LTYgNi02IDYgMi42ODYgNiA2eiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
-        <div className="relative container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto">
-            <Badge className="bg-white/20 text-white border-white/30 mb-4 md:mb-6 text-xs md:text-sm px-3 md:px-4 py-1 md:py-2">
-              <Star className="w-3 h-3 md:w-4 md:h-4 mr-2" />
-              {language === 'hi' ? 'पुरस्कार विजेता डिजिटल प्लेटफॉर्म' : 'Award-Winning Digital Platform'}
-            </Badge>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 leading-tight">
-              {language === 'hi' 
-                ? 'बाल पोषण प्रबंधन का डिजिटल परिवर्तन' 
-                : 'Digital Transformation of Child Nutrition Management'}
-            </h1>
-            <p className="text-base md:text-xl mb-6 md:mb-8 text-blue-100 max-w-3xl mx-auto leading-relaxed">
-              {language === 'hi' 
-                ? 'छत्तीसगढ़ राज्य में अत्याधुनिक तकनीक, पारदर्शी शासन और साक्ष्य-आधारित हस्तक्षेप के माध्यम से बाल कल्याण को आगे बढ़ाना'
-                : 'Advancing child welfare through cutting-edge technology, transparent governance, and evidence-based interventions across Chhattisgarh'}
-            </p>
-            
-            <div className="flex items-center justify-center gap-3 md:gap-6 flex-wrap mb-6 md:mb-8">
-              <img src={digitalIndiaLogo} alt="Digital India" className="h-12 md:h-16 opacity-90" />
-              <Badge className="bg-white/20 text-white border-white/30 text-xs px-2 md:px-4 py-1 md:py-2">
-                <Shield className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                ISO 27001
-              </Badge>
-              <Badge className="bg-white/20 text-white border-white/30 text-xs px-2 md:px-4 py-1 md:py-2">
-                <Globe className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                99.9% Uptime
-              </Badge>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Live Statistics */}
-      <section className="py-12 md:py-16 bg-white shadow-lg -mt-8 md:-mt-12 mx-4 md:mx-8 rounded-xl relative z-10">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-              {language === 'hi' ? 'लाइव डैशबोर्ड आंकड़े' : 'Live Dashboard Statistics'}
-            </h2>
-            <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded"></div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {stats.map((stat, index) => (
-              <Card key={index} className="text-center hover:shadow-xl transition-all duration-300 border-0 shadow-md">
-                <CardContent className="pt-6 pb-6">
-                  <stat.icon className="w-8 h-8 md:w-10 md:h-10 mx-auto mb-3 text-blue-600" />
-                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">{stat.value}</h3>
-                  <p className="text-xs md:text-sm text-gray-600 font-medium mb-2">{stat.label}</p>
-                  <span className="text-green-600 text-xs font-semibold flex items-center justify-center gap-1">
-                    <TrendingUp className="w-3 h-3" />
-                    {stat.trend}
-                  </span>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Main Dashboards Section */}
-      <section className="py-16 md:py-20 px-4">
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {language === 'hi' ? 'डैशबोर्ड पहुँच' : 'Dashboard Access'}
-            </h2>
-            <p className="text-base md:text-xl text-gray-600 max-w-3xl mx-auto">
-              {language === 'hi' 
-                ? 'अपनी भूमिका के लिए उपयुक्त डैशबोर्ड का चयन करें और प्रमाणीकरण के साथ लॉगिन करें'
-                : 'Select the appropriate dashboard for your role and login with authentication'
-              }
-            </p>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded mt-4"></div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {dashboards.map((dashboard, index) => {
-              const Icon = dashboard.icon;
-              return (
-                <Card 
-                  key={index}
-                  className="group relative overflow-hidden border-2 border-gray-200 bg-white hover:border-blue-500 transition-all duration-300 hover:shadow-2xl cursor-pointer"
-                  onClick={() => handleDashboardClick(dashboard.role, dashboard.email)}
-                >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${dashboard.bgGradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-                  
-                  <CardHeader className="relative pb-4">
-                    <div className={`w-14 h-14 md:w-16 md:h-16 rounded-xl bg-gradient-to-br ${dashboard.bgGradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                      <Icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
-                    </div>
-                    <CardTitle className="text-xl md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-                      {dashboard.title}
-                    </CardTitle>
-                    <CardDescription className="text-sm md:text-base text-gray-600">
-                      {dashboard.description}
-                    </CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="relative">
-                    <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6 pb-6 border-b border-gray-100">
-                      {Object.entries(dashboard.stats).map(([key, value]) => (
-                        <div key={key} className="text-center">
-                          <p className="text-lg md:text-2xl font-bold text-blue-600">{value}</p>
-                          <p className="text-[10px] md:text-xs text-gray-500 uppercase tracking-wide">{key}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    <Button 
-                      asChild
-                      className={`w-full bg-gradient-to-r ${dashboard.bgGradient} hover:opacity-90 text-white font-semibold py-5 md:py-6 rounded-lg transition-all duration-300 group-hover:shadow-lg text-sm md:text-base`}
-                      aria-label={`Login to access ${dashboard.title}`}
-                    >
-                      <Link to={`/login?email=${encodeURIComponent(dashboard.email)}&redirect=/`} onClick={(e) => { e.stopPropagation(); if (isAuthenticated) logout(); }}>
-                        {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
-                        <ChevronRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
-                      </Link>
-                    </Button>
-                    
-                    <p className="text-center text-xs text-gray-500 mt-3">
-                      {dashboard.email}
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-
-          {/* Demo Credentials Info */}
-          <Card className="mt-12 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200">
-            <CardContent className="p-6 md:p-8">
-              <div className="text-center">
-                <Shield className="w-10 h-10 md:w-12 md:h-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="text-xl md:text-2xl font-bold text-blue-900 mb-3">
-                  {language === 'hi' ? 'डेमो एक्सेस जानकारी' : 'Demo Access Information'}
-                </h3>
-                <p className="text-sm md:text-base text-blue-800 mb-4">
-                  {language === 'hi' 
-                    ? 'सभी डेमो खातों के लिए पासवर्ड का उपयोग करें: '
-                    : 'Use password for all demo accounts: '}
-                  <span className="font-mono bg-blue-200 px-3 py-1 rounded text-blue-900 font-bold">admin123</span>
-                </p>
-                <p className="text-xs md:text-sm text-gray-600 mb-4">
-                  {language === 'hi' 
-                    ? 'किसी भी डैशबोर्ड कार्ड पर क्लिक करें और ऊपर दिए गए ईमेल और पासवर्ड के साथ लॉगिन करें'
-                    : 'Click on any dashboard card and login with the email shown and password above'}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Professional Government Footer */}
-      <footer className="bg-gray-900 text-white py-10 md:py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <img src={indiaEmblem} alt="Government of India" className="h-10 md:h-12 opacity-80" />
-                <div>
-                  <h3 className="font-bold text-base md:text-lg">
-                    {language === 'hi' ? 'छत्तीसगढ़' : 'Chhattisgarh'}
-                  </h3>
-                  <p className="text-gray-400 text-xs md:text-sm">
-                    {language === 'hi' ? 'सरकारी पोर्टल' : 'Government Portal'}
-                  </p>
-                </div>
-              </div>
-              <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
-                {language === 'hi' 
-                  ? 'नवीन प्रौद्योगिकी समाधानों के माध्यम से डिजिटल शासन को सशक्त बनाना'
-                  : 'Empowering digital governance through innovative technology solutions'}
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-bold mb-4 text-sm md:text-base">
-                {language === 'hi' ? 'सरकारी सेवाएं' : 'Government Services'}
-              </h4>
-              <ul className="space-y-2 text-xs md:text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">
-                  {language === 'hi' ? 'फंड आवंटन' : 'Fund Allocation'}
-                </a></li>
-                <li><a href="#" className="hover:text-white transition-colors">
-                  {language === 'hi' ? 'स्वास्थ्य निगरानी' : 'Health Monitoring'}
-                </a></li>
-                <li><a href="#" className="hover:text-white transition-colors">
-                  {language === 'hi' ? 'प्रगति ट्रैकिंग' : 'Progress Tracking'}
-                </a></li>
-                <li><a href="#" className="hover:text-white transition-colors">
-                  {language === 'hi' ? 'रिपोर्ट जनरेशन' : 'Report Generation'}
-                </a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-bold mb-4 text-sm md:text-base">
-                {language === 'hi' ? 'संपर्क जानकारी' : 'Contact Information'}
-              </h4>
-              <div className="space-y-2 text-xs md:text-sm text-gray-400">
-                <p className="flex items-center gap-2">
-                  <Phone className="w-3 h-3 md:w-4 md:h-4" />
-                  1800-123-4567
-                </p>
-                <p className="flex items-center gap-2">
-                  <Mail className="w-3 h-3 md:w-4 md:h-4" />
-                  support@chhattisgarh.gov.in
-                </p>
-                <p className="flex items-center gap-2">
-                  <MapPin className="w-3 h-3 md:w-4 md:h-4" />
-                  {language === 'hi' ? 'रायपुर, छत्तीसगढ़' : 'Raipur, Chhattisgarh'}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 pt-8">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <img src={digitalIndiaLogo} alt="Digital India" className="h-8 md:h-10 opacity-80" />
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-500" />
-                  <span className="text-gray-400 text-xs md:text-sm">
-                    {language === 'hi' ? 'प्रमाणित सुरक्षित मंच' : 'Certified Secure Platform'}
-                  </span>
-                </div>
-              </div>
-              <div className="text-center md:text-right">
-                <p className="text-gray-400 text-xs md:text-sm mb-1">
-                  {language === 'hi' 
-                    ? "© 2025 छत्तीसगढ़ सरकार। सभी अधिकार सुरक्षित।"
-                    : "© 2025 Government of Chhattisgarh. All rights reserved."
-                  }
-                </p>
-                <p className="text-gray-500 text-[10px] md:text-xs">
-                  {language === 'hi'
-                    ? "डिजिटल इंडिया पहल के तहत विकसित | संस्करण 2.1.0"
-                    : "Developed under Digital India Initiative | Version 2.1.0"
-                  }
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+  <CardHeader className="relative pb-4">
+    <div className={`w-14 h-14 md:w-16 md:h-16 rounded-xl bg-gradient-to-br ${dashboard.bgGradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+      <Icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
     </div>
-  );
-};
+    <CardTitle className="text-xl md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+      {dashboard.title}
+    </CardTitle>
+    <CardDescription className="text-sm md:text-base text-gray-600">
+      {dashboard.description}
+    </CardDescription>
+  </CardHeader>
+
+  <CardContent className="relative">
+    <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6 pb-6 border-b border-gray-100">
+      {Object.entries(dashboard.stats).map(([key, value]) => (
+        <div key={key} className="text-center">
+          <p className="text-lg md:text-2xl font-bold text-blue-600">{value}</p>
+          <p className="text-[10px] md:text-xs text-gray-500 uppercase tracking-wide">{key}</p>
+        </div>
+      ))}
+    </div>
+
+    <Button 
+      className={`w-full bg-gradient-to-r ${dashboard.bgGradient} hover:opacity-90 text-white font-semibold py-5 md:py-6 rounded-lg transition-all duration-300 group-hover:shadow-lg text-sm md:text-base`}
+      aria-label={`Login to access ${dashboard.title}`}
+    >
+      <Link
+        to={`/login?email=${encodeURIComponent(dashboard.email)}&redirect=/`}
+        onClick={(e) => {
+          e.preventDefault();
+          if (isAuthenticated) logout();
+          navigate(`/login?email=${encodeURIComponent(dashboard.email)}&redirect=/`);
+        }}
+        className="w-full h-full flex items-center justify-center"
+      >
+        {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
+        <ChevronRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+      </Link>
+    </Button>
+
+    <p className="text-center text-xs text-gray-500 mt-3">
+      {dashboard.email}
+    </p>
+  </CardContent>
+</Card>
