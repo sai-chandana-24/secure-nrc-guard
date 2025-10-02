@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -311,12 +311,14 @@ export const LandingPage = () => {
                     </div>
 
                     <Button 
+                      asChild
                       className={`w-full bg-gradient-to-r ${dashboard.bgGradient} hover:opacity-90 text-white font-semibold py-5 md:py-6 rounded-lg transition-all duration-300 group-hover:shadow-lg text-sm md:text-base`}
-                      onClick={(e) => { e.stopPropagation(); handleDashboardClick(dashboard.role, dashboard.email); }}
                       aria-label={`Login to access ${dashboard.title}`}
                     >
-                      {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
-                      <ChevronRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+                      <Link to={`/login?email=${encodeURIComponent(dashboard.email)}&redirect=/`} onClick={(e) => e.stopPropagation()}>
+                        {language === 'hi' ? 'लॉगिन करें' : 'Login to Access'}
+                        <ChevronRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+                      </Link>
                     </Button>
                     
                     <p className="text-center text-xs text-gray-500 mt-3">
