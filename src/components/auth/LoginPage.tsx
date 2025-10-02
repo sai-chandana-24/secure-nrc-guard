@@ -209,7 +209,7 @@ export function LoginPage() {
                   type="button"
                   variant={mode === 'login' ? 'default' : 'outline'}
                   className="flex-1"
-                  onClick={() => { setMode('login'); setError(''); }}
+                  onClick={() => { setMode('login'); setError(''); setSuccess(''); }}
                 >
                   Login
                 </Button>
@@ -217,7 +217,7 @@ export function LoginPage() {
                   type="button"
                   variant={mode === 'signup' ? 'default' : 'outline'}
                   className="flex-1"
-                  onClick={() => { setMode('signup'); setError(''); }}
+                  onClick={() => { setMode('signup'); setError(''); setSuccess(''); }}
                 >
                   Sign Up
                 </Button>
