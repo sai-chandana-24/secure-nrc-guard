@@ -2,6 +2,12 @@
 // Uses service role to create users and assign roles
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
+
 type DemoUser = {
   email: string;
   full_name: string;
@@ -63,15 +69,20 @@ async function ensureUserAndRole(supabase: any, u: DemoUser) {
 }
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   if (req.method !== 'POST') {
-    return new Response('Method Not Allowed', { status: 405 });
+    return new Response('Method Not Allowed', { status: 405, headers: { ...corsHeaders } });
   }
 
   const url = Deno.env.get('SUPABASE_URL');
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
   if (!url || !serviceRoleKey) {
-    return new Response('Server not configured', { status: 500 });
+    return new Response('Server not configured', { status: 500, headers: { ...corsHeaders } });
   }
 
   const supabase = createClient(url, serviceRoleKey) as any;
@@ -88,6 +99,6 @@ Deno.serve(async (req) => {
 
   return new Response(JSON.stringify({ ok: true, results }), {
     status: 200,
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...corsHeaders },
   });
 });
