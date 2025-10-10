@@ -13,15 +13,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
 export function LoginPage() {
-  const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [name, setName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const { login, signup, isLoading } = useAuth();
+  const { login, isLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -40,39 +36,10 @@ export function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
 
     if (!email || !password) {
       setError('Please enter both email and password');
       return;
-    }
-
-    if (mode === 'signup') {
-      if (!name) {
-        setError('Please enter your full name');
-        return;
-      }
-      if (password !== confirmPassword) {
-        setError('Passwords do not match');
-        return;
-      }
-      if (password.length < 6) {
-        setError('Password must be at least 6 characters');
-        return;
-      }
-      
-      const result = await signup(email, password, name);
-      if (result.success) {
-        setSuccess('Account created successfully! You can now login.');
-        setMode('login');
-        setPassword('');
-        setConfirmPassword('');
-        setName('');
-        return;
-      } else {
-        setError(result.error || 'Signup failed. Please try again.');
-        return;
-      }
     }
 
     const loginSuccess = await login(email, password);
@@ -204,63 +171,36 @@ export function LoginPage() {
                 </div>
               </div>
               <CardTitle className="text-2xl font-bold text-primary">
-                {mode === 'login' ? 'Secure Access Portal' : 'Create New Account'}
+                Demo Login Portal
               </CardTitle>
               <CardDescription className="text-base">
-                {mode === 'login' 
-                  ? 'Enter your government credentials to access the administration dashboard'
-                  : 'Register for a new government account with official credentials'}
+                Use any of the demo credentials below to access the system
               </CardDescription>
-              {/* Mode Toggle */}
-              <div className="flex gap-2 pt-4">
-                <Button
-                  type="button"
-                  variant={mode === 'login' ? 'default' : 'outline'}
-                  className="flex-1"
-                  onClick={() => { setMode('login'); setError(''); setSuccess(''); }}
-                >
-                  Login
-                </Button>
-                <Button
-                  type="button"
-                  variant={mode === 'signup' ? 'default' : 'outline'}
-                  className="flex-1"
-                  onClick={() => { setMode('signup'); setError(''); setSuccess(''); }}
-                >
-                  Sign Up
-                </Button>
-              </div>
             </CardHeader>
             <CardContent className="space-y-6">
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Demo Credentials */}
+                <div className="p-4 bg-muted/30 rounded-lg border border-primary/20 space-y-2">
+                  <h4 className="text-sm font-semibold text-primary mb-2">Demo Credentials (Password: admin123)</h4>
+                  <div className="text-xs space-y-1 text-muted-foreground">
+                    <p>• admin@chhattisgarh.gov.in - Administrator</p>
+                    <p>• district@chhattisgarh.gov.in - District Officer</p>
+                    <p>• block@chhattisgarh.gov.in - Block Officer</p>
+                    <p>• supervisor@chhattisgarh.gov.in - Field Supervisor</p>
+                    <p>• teacher@chhattisgarh.gov.in - Teacher</p>
+                    <p>• nrc@chhattisgarh.gov.in - NRC Officer</p>
+                    <p>• public@example.com - Public User</p>
+                  </div>
+                </div>
+
                 {error && (
                   <Alert variant="destructive">
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
-                {success && (
-                  <Alert className="bg-success/10 border-success text-success">
-                    <AlertDescription>{success}</AlertDescription>
-                  </Alert>
-                )}
-
-                {mode === 'signup' && (
-                  <div className="space-y-2">
-                    <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
-                    <Input
-                      id="name"
-                      type="text"
-                      placeholder="Enter your full name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="h-12 govt-transition focus:govt-shadow-glow border-2"
-                      required
-                    />
-                  </div>
-                )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">Official Government Email ID</Label>
+                  <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
@@ -276,13 +216,13 @@ export function LoginPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium">Secure Password</Label>
+                  <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your secure password"
+                      placeholder="Enter password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="pl-10 pr-12 h-12 govt-transition focus:govt-shadow-glow border-2"
@@ -298,21 +238,6 @@ export function LoginPage() {
                   </div>
                 </div>
 
-                {mode === 'signup' && (
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password</Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      placeholder="Re-enter your password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="h-12 govt-transition focus:govt-shadow-glow border-2"
-                      required
-                    />
-                  </div>
-                )}
-
                 <Button
                   type="submit"
                   className="w-full h-12 text-base govt-gradient hover:opacity-90 text-white"
@@ -322,12 +247,12 @@ export function LoginPage() {
                   {isLoading ? (
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      {mode === 'login' ? 'Authenticating...' : 'Creating Account...'}
+                      Logging in...
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
                       <Shield className="w-4 h-4" />
-                      {mode === 'login' ? 'Secure Login' : 'Create Account'}
+                      Login
                     </div>
                   )}
                 </Button>
@@ -353,18 +278,6 @@ export function LoginPage() {
                 </div>
               </div>
 
-              {/* Getting Started Info */}
-              <div className="p-4 bg-muted/30 rounded-lg border border-primary/20">
-                <h4 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2">
-                  <Shield className="w-4 h-4" />
-                  Getting Started
-                </h4>
-                <p className="text-xs text-muted-foreground">
-                  {mode === 'login' 
-                    ? 'Use your government credentials to access the system. New users should sign up first.' 
-                    : 'Create your account with official government credentials to access the NRC E-Finance Management System.'}
-                </p>
-              </div>
             </CardContent>
           </Card>
 
