@@ -10,6 +10,7 @@ import chhattishgarhLogo from '@/assets/chhattisgarh-logo.png';
 import indiaEmblem from '@/assets/india-emblem.png';
 import digitalIndiaLogo from '@/assets/digital-india-logo.png';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 export function LoginPage() {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
@@ -28,6 +29,13 @@ export function LoginPage() {
     const preset = searchParams.get('email');
     if (preset) setEmail(preset);
   }, [searchParams]);
+
+  // Seed demo users on first visit (idempotent on the server)
+  useEffect(() => {
+    supabase.functions
+      .invoke('seed-demo-users', { body: { init: true } })
+      .catch(() => {});
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
