@@ -110,8 +110,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
-    
+
     try {
+      // Demo-mode login: bypass backend for known demo accounts
+      const demoUsers: Record<string, { full_name: string; role: User['role']; designation: string; department: string; district?: string }> = {
+        'admin@chhattisgarh.gov.in': { full_name: 'Administrator', role: 'admin', designation: 'Administrator', department: 'NRC HQ' },
+        'district@chhattisgarh.gov.in': { full_name: 'District Officer', role: 'district', designation: 'District Officer', department: 'District Administration' },
+        'block@chhattisgarh.gov.in': { full_name: 'Block Officer', role: 'block', designation: 'Block Officer', department: 'Block Administration' },
+        'supervisor@chhattisgarh.gov.in': { full_name: 'Field Supervisor', role: 'supervisor', designation: 'Supervisor', department: 'Field Operations' },
+        'teacher@chhattisgarh.gov.in': { full_name: 'Teacher', role: 'teacher', designation: 'Teacher', department: 'Education' },
+        'nrc@chhattisgarh.gov.in': { full_name: 'NRC Officer', role: 'nrc', designation: 'NRC Officer', department: 'NRC Center' },
+        'public@example.com': { full_name: 'Public User', role: 'public', designation: 'Citizen', department: 'Public' },
+      };
+
+      const key = email.trim().toLowerCase();
+      if (password === 'admin123' && demoUsers[key]) {
+        const info = demoUsers[key];
+        const demoUser: User = {
+          id: `demo-${key}`,
+          name: info.full_name,
+          email: key,
+          role: info.role,
+          department: info.department,
+          designation: info.designation,
+          profilePhoto: '/src/assets/admin-profile.jpg',
+          phone: '',
+          district: info.district,
+          permissions: [info.role],
+          lastLogin: new Date().toISOString(),
+          isActive: true,
+          location: info.district || 'Chhattisgarh',
+        };
+
+        setUser(demoUser);
+        setSession(null);
+        return true;
+      }
+
+      // Fallback to real auth
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -124,7 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await fetchUserProfile(data.user.id);
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error('Login error:', error);
@@ -197,7 +233,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     user,
     session,
-    isAuthenticated: !!user && !!session,
+    isAuthenticated: !!user,
     login,
     signup,
     logout,
