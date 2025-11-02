@@ -170,32 +170,38 @@ export const LandingPage = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Auth Buttons */}
             <div className="flex items-center gap-3">
               <Button
+                asChild
                 variant="outline"
                 size="default"
-                onClick={() => navigate('/login')}
+                //    onClick={() => navigate('/login')}
                 className="hidden md:flex items-center gap-2 border-2 hover:bg-primary hover:text-primary-foreground"
               >
-                <Shield className="w-4 h-4" />
-                {language === "hi" ? "लॉगिन" : "Login"}
+                <Link>
+                  <Shield className="w-4 h-4" />
+                  {language === "hi" ? "लॉगिन" : "Login"}
+                </Link>
               </Button>
               <Button
                 size="default"
-                onClick={() => navigate('/signup')}
+                asChild
+                //   onClick={() => navigate('/signup')}
                 className="hidden md:flex items-center gap-2 govt-gradient text-white"
               >
-                {language === "hi" ? "साइन अप" : "Sign Up"}
-                <ChevronRight className="w-4 h-4" />
+                <Link>
+                  {language === "hi" ? "साइन अप" : "Sign Up"}
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
               </Button>
               <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
-          
+
           {/* Mobile Menu */}
           {mobileMenuOpen && (
             <div className="md:hidden py-4 border-t border-border space-y-2">
@@ -203,7 +209,7 @@ export const LandingPage = () => {
                 variant="outline"
                 size="lg"
                 onClick={() => {
-                  navigate('/login');
+                  navigate("/login");
                   setMobileMenuOpen(false);
                 }}
                 className="w-full flex items-center justify-center gap-2 border-2"
@@ -214,7 +220,7 @@ export const LandingPage = () => {
               <Button
                 size="lg"
                 onClick={() => {
-                  navigate('/signup');
+                  navigate("/signup");
                   setMobileMenuOpen(false);
                 }}
                 className="w-full flex items-center justify-center gap-2 govt-gradient text-white"
@@ -318,7 +324,7 @@ export const LandingPage = () => {
                   <div
                     className={`absolute inset-0 bg-gradient-to-br ${dashboard.bgGradient} opacity-5 group-hover:opacity-10 govt-transition`}
                   />
-                  
+
                   <CardHeader className="relative pb-4">
                     <div className="flex items-center gap-4 mb-4">
                       <div
@@ -332,11 +338,9 @@ export const LandingPage = () => {
                         </CardTitle>
                       </div>
                     </div>
-                    <CardDescription className="text-sm text-muted-foreground">
-                      {dashboard.description}
-                    </CardDescription>
+                    <CardDescription className="text-sm text-muted-foreground">{dashboard.description}</CardDescription>
                   </CardHeader>
-                  
+
                   <CardContent className="relative">
                     <div className="grid grid-cols-3 gap-4 mb-4">
                       {Object.entries(dashboard.stats).map(([key, value]) => (
@@ -346,7 +350,7 @@ export const LandingPage = () => {
                         </div>
                       ))}
                     </div>
-                    
+
                     <div className="flex items-center justify-between pt-4 border-t border-border">
                       <Badge variant="outline" className="text-xs">
                         {dashboard.role}
