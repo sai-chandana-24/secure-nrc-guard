@@ -37,7 +37,7 @@ function AppRoutes() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/home', '/main', '/landing', '/login', '/signup'];
+  const publicRoutes = ["/home", "/main", "/landing", "/login", "/signup"];
   const isPublicRoute = publicRoutes.includes(window.location.pathname);
 
   if (!isAuthenticated && !isPublicRoute) {
@@ -47,19 +47,19 @@ function AppRoutes() {
   // Route based on user role
   const getDashboardComponent = () => {
     switch (user?.role) {
-      case 'admin':
+      case "admin":
         return <AdminDashboard />;
-      case 'district':
+      case "district":
         return <DistrictDashboard />;
-      case 'block':
+      case "block":
         return <BlockDashboard />;
-      case 'supervisor':
+      case "supervisor":
         return <SupervisorDashboard />;
-      case 'teacher':
+      case "teacher":
         return <TeacherDashboard />;
-      case 'nrc':
+      case "nrc":
         return <NRCDashboard />;
-      case 'public':
+      case "public":
         return <PublicDashboard />;
       default:
         return <AdminDashboard />;
@@ -69,8 +69,8 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={isAuthenticated ? getDashboardComponent() : <LandingPage />} />
-      <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />} />
-      <Route path="/signup" element={isAuthenticated ? <Navigate to="/" replace /> : <SignupPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
       <Route path="/home" element={<LandingPage />} />
       <Route path="/main" element={<LandingPage />} />
       <Route path="/landing" element={<LandingPage />} />
