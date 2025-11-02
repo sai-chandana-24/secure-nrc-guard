@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LoginPage } from "@/components/auth/LoginPage";
+import { SignupPage } from "@/components/auth/SignupPage";
 import { LandingPage } from "@/components/LandingPage";
 import SettingsPage from "./pages/SettingsPage";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -36,7 +37,7 @@ function AppRoutes() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/home', '/main', '/landing', '/login'];
+  const publicRoutes = ['/home', '/main', '/landing', '/login', '/signup'];
   const isPublicRoute = publicRoutes.includes(window.location.pathname);
 
   if (!isAuthenticated && !isPublicRoute) {
@@ -69,6 +70,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={isAuthenticated ? getDashboardComponent() : <LandingPage />} />
       <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />} />
+      <Route path="/signup" element={isAuthenticated ? <Navigate to="/" replace /> : <SignupPage />} />
       <Route path="/home" element={<LandingPage />} />
       <Route path="/main" element={<LandingPage />} />
       <Route path="/landing" element={<LandingPage />} />

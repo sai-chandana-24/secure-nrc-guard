@@ -170,10 +170,60 @@ export const LandingPage = () => {
                 </div>
               </div>
             </div>
-            <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            
+            {/* Auth Buttons */}
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="default"
+                onClick={() => navigate('/login')}
+                className="hidden md:flex items-center gap-2 border-2 hover:bg-primary hover:text-primary-foreground"
+              >
+                <Shield className="w-4 h-4" />
+                {language === "hi" ? "लॉगिन" : "Login"}
+              </Button>
+              <Button
+                size="default"
+                onClick={() => navigate('/signup')}
+                className="hidden md:flex items-center gap-2 govt-gradient text-white"
+              >
+                {language === "hi" ? "साइन अप" : "Sign Up"}
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+              <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
+          
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden py-4 border-t border-border space-y-2">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  navigate('/login');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full flex items-center justify-center gap-2 border-2"
+              >
+                <Shield className="w-4 h-4" />
+                {language === "hi" ? "लॉगिन" : "Login"}
+              </Button>
+              <Button
+                size="lg"
+                onClick={() => {
+                  navigate('/signup');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full flex items-center justify-center gap-2 govt-gradient text-white"
+              >
+                {language === "hi" ? "साइन अप" : "Sign Up"}
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
         </div>
       </header>
 
