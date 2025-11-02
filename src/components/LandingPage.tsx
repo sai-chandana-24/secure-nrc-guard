@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -174,27 +174,21 @@ export const LandingPage = () => {
             {/* Auth Buttons */}
             <div className="flex items-center gap-3">
               <Button
-                asChild
                 variant="outline"
                 size="default"
-                //    onClick={() => navigate('/login')}
+                onClick={() => navigate("/login")}
                 className="hidden md:flex items-center gap-2 border-2 hover:bg-primary hover:text-primary-foreground"
               >
-                <Link>
-                  <Shield className="w-4 h-4" />
-                  {language === "hi" ? "लॉगिन" : "Login"}
-                </Link>
+                <Shield className="w-4 h-4" />
+                {language === "hi" ? "लॉगिन" : "Login"}
               </Button>
               <Button
                 size="default"
-                asChild
-                //   onClick={() => navigate('/signup')}
+                onClick={() => navigate("/signup")}
                 className="hidden md:flex items-center gap-2 govt-gradient text-white"
               >
-                <Link>
-                  {language === "hi" ? "साइन अप" : "Sign Up"}
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
+                {language === "hi" ? "साइन अप" : "Sign Up"}
+                <ChevronRight className="w-4 h-4" />
               </Button>
               <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
