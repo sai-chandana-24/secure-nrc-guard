@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axiosInstance from '@/utils/axiosInstance'; // Adjust path if needed
 
-// User interface remains the same, it's a good data structure
+// User interface (no change)
 export interface User {
   id: string;
   name: string;
@@ -21,10 +21,9 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  // 3. REMOVED Supabase-specific session
-  // session: Session | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
+  // [STEP 1] Make sure you updated the return type here
+  login: (email: string, password: string) => Promise<User | null>;
   signup: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateProfile: (userData: Partial<User>) => void;
@@ -35,27 +34,20 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  // 4. REMOVED session state
-  // const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 5. REPLACED auth listener with a "check auth status" on load
+  // useEffect for checkAuthStatus (no change)
   useEffect(() => {
-    // This function runs once on app load to check if a token exists
     const checkAuthStatus = async () => {
       const token = localStorage.getItem('token');
 
       if (token) {
         try {
-          // Your axios interceptor automatically adds the token to this request
-          // This endpoint should return the user object if the token is valid
           const response = await axiosInstance.get('/auth/me');
-          
-          // Assuming your backend returns { user: User }
           setUser(response.data.user);
         } catch (error) {
           console.error('Auth check failed:', error);
-          localStorage.removeItem('token'); // Token is invalid or expired
+          localStorage.removeItem('token');
           setUser(null);
         }
       }
@@ -63,15 +55,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     checkAuthStatus();
-    // The empty dependency array ensures this runs only once on mount
   }, []);
 
-  // 6. REMOVED fetchUserProfile, as login/auth check now handle this
-  // const fetchUserProfile = async (userId: string) => { ... }
-
-  // 7. REPLACED login logic to use Axios
-  const login = async (email: string, password: string): Promise<boolean> => {
+  // [STEP 2] Use this updated login function
+  const login = async (email: string, password: string): Promise<User | null> => {
     setIsLoading(true);
+    let userToReturn: User | null = null; // Define variable here
+
     try {
       // This now hits your backend at /api/auth/login
       const response = await axiosInstance.post('/auth/login', {
@@ -87,20 +77,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // Set the user in context
       setUser(user);
-      return true;
+      
+      userToReturn = user; // Set variable on success
     } catch (error) {
       console.error('Login error:', error);
-      return false;
+      userToReturn = null; // Set variable on failure
     } finally {
       setIsLoading(false);
     }
+
+    return userToReturn; // Single return statement at the end
   };
 
-  // 8. REPLACED signup logic to use Axios
+  // 8. REPLACED signup logic to use Axios (no change)
   const signup = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
     try {
-      // This hits your backend at /api/auth/signup
       await axiosInstance.post('/auth/register', {
         email,
         password,
@@ -115,28 +107,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // 9. REPLACED logout logic
+  // 9. REPLACED logout logic (no change)
   const logout = async () => {
-    // Notify backend (fire-and-forget)
     try {
       await axiosInstance.post('/auth/logout');
     } catch (error) {
       console.error('Backend logout failed:', error);
     }
     
-    // Clear local state and token
     localStorage.removeItem('token');
     setUser(null);
   };
 
-  // 10. REPLACED updateProfile logic to use Axios
+  // 10. REPLACED updateProfile logic to use Axios (no change)
   const updateProfile = async (userData: Partial<User>) => {
     if (user) {
       try {
-        // This hits your backend at /api/profile (or similar)
         const response = await axiosInstance.patch('/profile', userData);
-        
-        // Assuming backend returns the updated user object
         setUser(response.data.user);
       } catch (error) {
         console.error('Error updating profile:', error);
@@ -146,8 +133,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const value = {
     user,
-    // 11. REMOVED session from context value
-    // session,
     isAuthenticated: !!user,
     login,
     signup,
@@ -163,7 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// useAuth hook remains the same
+// useAuth hook remains the same (no change)
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {

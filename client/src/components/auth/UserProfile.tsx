@@ -19,14 +19,17 @@ import { useAuth } from '@/contexts/AuthContext';
 import adminProfilePhoto from '@/assets/admin-profile.jpg';
 import avatarMale from '@/assets/avatar-male.png';
 import avatarFemale from '@/assets/avatar-female.png';
+
 export function UserProfile() {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
   if (!user) return null;
 
-  const isFemale = /^(mrs|ms)\.?(\s|$)/i.test(user.name) || /Mrs\.|Ms\./i.test(user.name);
+  // [FIX 1] Add fallback for user.name
+  const isFemale = /^(mrs|ms)\.?(\s|$)/i.test(user.name || '') || /Mrs\.|Ms\./i.test(user.name || '');
   const profileSrc = isFemale ? avatarFemale : avatarMale;
+
   const getRoleBadge = (role: string) => {
     switch (role) {
       case 'admin':
@@ -55,14 +58,17 @@ export function UserProfile() {
           <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-primary/20">
             <img 
               src={profileSrc}
-              alt={user.name}
+              // [FIX 2] Add fallback for alt text
+              alt={user.name || 'User profile'}
               onError={(e) => { (e.currentTarget as HTMLImageElement).src = adminProfilePhoto; }}
               className="w-full h-full object-cover"
             />
           </div>
           <div className="hidden sm:block text-left">
-            <p className="text-sm font-medium">{user.name.split(' ')[0]}</p>
-            <p className="text-xs text-muted-foreground">{user.designation}</p>
+            {/* [FIX 3] This is the line that crashed. Add fallback. */}
+            <p className="text-sm font-medium">{(user.name || 'User').split(' ')[0]}</p>
+            {/* [FIX 4] Add fallback for designation */}
+            <p className="text-xs text-muted-foreground">{user.designation || 'Welcome'}</p>
           </div>
         </Button>
       </DialogTrigger>
@@ -84,14 +90,16 @@ export function UserProfile() {
             <div className="w-16 h-16 rounded-full overflow-hidden border-3 border-primary/20 govt-shadow-md">
               <img 
                 src={profileSrc}
-                alt={user.name}
+                // [FIX 5] Add fallback for alt text
+                alt={user.name || 'User profile'}
                 onError={(e) => { (e.currentTarget as HTMLImageElement).src = adminProfilePhoto; }}
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-lg text-primary">{user.name}</h3>
-              <p className="text-sm text-muted-foreground">{user.designation}</p>
+              {/* [FIX 6] Add fallback for name and designation */}
+              <h3 className="font-semibold text-lg text-primary">{user.name || 'User Name'}</h3>
+              <p className="text-sm text-muted-foreground">{user.designation || 'Role Not Set'}</p>
               <div className="mt-1">
                 {getRoleBadge(user.role)}
               </div>
@@ -108,15 +116,18 @@ export function UserProfile() {
             <div className="space-y-2">
               <div className="flex items-center gap-3 text-sm">
                 <Mail className="w-4 h-4 text-muted-foreground" />
+                {/* Email is safe, it's in the token */}
                 <span>{user.email}</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <Phone className="w-4 h-4 text-muted-foreground" />
-                <span>{user.phone}</span>
+                {/* [FIX 7] Add fallback for phone */}
+                <span>{user.phone || 'No phone provided'}</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <MapPin className="w-4 h-4 text-muted-foreground" />
-                <span>{user.department}</span>
+                {/* [FIX 8] Add fallback for department */}
+                <span>{user.department || 'No department provided'}</span>
               </div>
             </div>
           </div>
@@ -140,7 +151,8 @@ export function UserProfile() {
                 <span className="text-sm">Last Login</span>
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm">{new Date(user.lastLogin).toLocaleDateString('en-IN')}</span>
+                  {/* [FIX 9] Add fallback for lastLogin */}
+                  <span className="text-sm">{user.lastLogin ? new Date(user.lastLogin).toLocaleDateString('en-IN') : 'N/A'}</span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
@@ -161,7 +173,8 @@ export function UserProfile() {
               Access Permissions
             </h4>
             <div className="flex flex-wrap gap-2">
-              {user.permissions.map((permission, index) => (
+              {/* [FIX 10] Add fallback for permissions array */}
+              {(user.permissions || []).map((permission, index) => (
                 <Badge key={index} variant="outline" className="text-xs">
                   {permission.replace('_', ' ')}
                 </Badge>

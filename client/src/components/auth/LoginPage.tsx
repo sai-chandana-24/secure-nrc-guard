@@ -32,6 +32,27 @@ const loginSchema = z.object({
 // 2. Infer the type from the schema for type safety
 type LoginFormValues = z.infer<typeof loginSchema>;
 
+const getDashboardPathForRole = (role: string) => {
+  switch (role) {
+    case 'admin':
+      return '/admin';
+    case 'district':
+      return '/district';
+    case 'block':
+      return '/block';
+    case 'supervisor':
+      return '/supervisor';
+    case 'teacher':
+      return '/teacher';
+    case 'nrc':
+      return '/nrc';
+    case 'public':
+      return '/'; // Public users go to the main page
+    default:
+      return '/'; // Default fallback
+  }
+};
+
 export function LoginPage() {
   // const [email, setEmail] = useState(''); // No longer needed
   // const [password, setPassword] = useState(''); // No longer needed
@@ -56,8 +77,7 @@ export function LoginPage() {
 
     const loginSuccess = await login(data.email, data.password);
     if (loginSuccess) {
-      const redirect = searchParams.get('redirect') || '/';
-      navigate(redirect, { replace: true });
+      navigate("/", { replace: true });
       return;
     }
     setError('Invalid credentials. Please check your email and password.');

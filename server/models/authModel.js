@@ -12,7 +12,6 @@ const authSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    // Add all possible roles to the enum for data integrity
     enum: ['admin', 'district', 'block', 'supervisor', 'teacher', 'nrc', 'public'],
     default: 'public', // Set the default role to 'public'
   },
