@@ -241,80 +241,70 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* Main Dashboards Section */}
+      {/* Role Statistics Section */}
       <section className="py-16 md:py-20 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 govt-gradient bg-clip-text text-transparent">
-              {language === "hi" ? "डैशबोर्ड पहुँच" : "Dashboard Access"}
+              {language === "hi" ? "विभाग सांख्यिकी" : "Department Statistics"}
             </h2>
             <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto">
               {language === "hi"
-                ? "अपनी भूमिका के लिए उपयुक्त डैशबोर्ड का चयन करें और प्रमाणीकरण के साथ लॉगिन करें"
-                : "Select the appropriate dashboard for your role and login with authentication"}
+                ? "विभिन्न भूमिकाओं और उनके प्रदर्शन संकेतकों का अवलोकन"
+                : "Overview of different roles and their performance indicators"}
             </p>
             <div className="w-24 h-1 govt-gradient mx-auto rounded mt-4"></div>
           </div>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {dashboards.map((dashboard, index) => {
               const Icon = dashboard.icon;
               return (
-                <div
+                <Card
                   key={index}
-                  className="group relative overflow-hidden bg-card border-2 border-border hover:border-primary rounded-xl p-6 md:p-8 govt-transition hover:shadow-2xl animate-fade-in"
+                  className="group relative overflow-hidden border-2 border-border hover:border-primary govt-transition hover:shadow-2xl animate-fade-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div
-                    className={`absolute inset-0 bg-gradient-to-r ${dashboard.bgGradient} opacity-0 group-hover:opacity-5 govt-transition pointer-events-none`}
+                    className={`absolute inset-0 bg-gradient-to-br ${dashboard.bgGradient} opacity-5 group-hover:opacity-10 govt-transition`}
                   />
-
-                  <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6">
-                    {/* Icon Section */}
-                    <div
-                      className={`flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-xl bg-gradient-to-br ${dashboard.bgGradient} flex items-center justify-center group-hover:scale-110 govt-transition govt-shadow-lg`}
-                    >
-                      <Icon className="w-10 h-10 md:w-12 md:h-12 text-white" />
-                    </div>
-
-                    {/* Content Section */}
-                    <div className="flex-grow text-center md:text-left">
-                      <h3 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-primary govt-transition mb-2">
-                        {dashboard.title}
-                      </h3>
-                      <p className="text-sm md:text-base text-muted-foreground mb-4">{dashboard.description}</p>
-
-                      {/* Stats */}
-                      <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-6 mb-4">
-                        {Object.entries(dashboard.stats).map(([key, value]) => (
-                          <div key={key} className="flex items-center gap-2">
-                            <span className="text-lg md:text-xl font-bold text-primary">{value}</span>
-                            <span className="text-xs text-muted-foreground uppercase">{key}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      <p className="text-xs text-muted-foreground">{dashboard.email}</p>
-                    </div>
-
-                    {/* Button Section */}
-                    <div className="flex-shrink-0 w-full md:w-auto">
-                      <Button
-                        type="button"
-                        size="lg"
-                        className={`w-full md:w-auto bg-gradient-to-r ${dashboard.bgGradient} hover:opacity-90 text-white font-semibold px-8 py-6 rounded-lg govt-transition group-hover:shadow-xl text-base md:text-lg`}
-                        onClick={() => {
-                          if (isAuthenticated) logout();
-                          navigate(`/login?email=${encodeURIComponent(dashboard.email)}`);
-                        }}
-                        aria-label={`Login to access ${dashboard.title}`}
+                  
+                  <CardHeader className="relative pb-4">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div
+                        className={`flex-shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br ${dashboard.bgGradient} flex items-center justify-center group-hover:scale-110 govt-transition govt-shadow-lg`}
                       >
-                        {language === "hi" ? "लॉगिन करें" : "Login to Access"}
-                        <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 govt-transition" />
-                      </Button>
+                        <Icon className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="flex-grow">
+                        <CardTitle className="text-xl md:text-2xl font-bold text-foreground group-hover:text-primary govt-transition">
+                          {dashboard.title}
+                        </CardTitle>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                    <CardDescription className="text-sm text-muted-foreground">
+                      {dashboard.description}
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="relative">
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      {Object.entries(dashboard.stats).map(([key, value]) => (
+                        <div key={key} className="text-center p-3 bg-card/50 rounded-lg border border-border/50">
+                          <div className="text-2xl md:text-3xl font-bold text-primary mb-1">{value}</div>
+                          <div className="text-xs text-muted-foreground uppercase font-medium">{key}</div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="flex items-center justify-between pt-4 border-t border-border">
+                      <Badge variant="outline" className="text-xs">
+                        {dashboard.role}
+                      </Badge>
+                      <CheckCircle className="w-5 h-5 text-success" />
+                    </div>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
