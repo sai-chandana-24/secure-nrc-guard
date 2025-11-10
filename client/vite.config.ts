@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     proxy: {
       "/api": {
-        target: "http://localhost:3000", // ✅ backend port
+        target: "https://secure-nrc-guard.onrender.com", // ✅ backend port
         changeOrigin: true,
         secure: false,
       },

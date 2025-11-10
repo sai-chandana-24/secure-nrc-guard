@@ -9,7 +9,7 @@
     "dev:server": "nodemon server/server.js",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "build": "NODE_ENV=development npm install && cd client && npm install && npm run build",
-    "start": "NODE_ENV=production server/server.js"
+    "start": "NODE_ENV=production node server/server.js"
   },
   "author": "",
   "license": "ISC",
