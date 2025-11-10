@@ -36,11 +36,11 @@ const recoveryData = [
 ];
 
 const districtFundData = [
-  { district: 'Mumbai', allocated: 85000000, utilized: 82000000, percentage: 96.5 },
-  { district: 'Pune', allocated: 65000000, utilized: 58000000, percentage: 89.2 },
-  { district: 'Nagpur', allocated: 72000000, utilized: 68000000, percentage: 94.4 },
-  { district: 'Nashik', allocated: 58000000, utilized: 54000000, percentage: 93.1 },
-  { district: 'Aurangabad', allocated: 63000000, utilized: 57000000, percentage: 90.5 },
+  { district: 'Raipur', allocated: 85000000, utilized: 82000000, percentage: 96.5 },
+  { district: 'Bilaspur', allocated: 65000000, utilized: 58000000, percentage: 89.2 },
+  { district: 'Durg', allocated: 72000000, utilized: 68000000, percentage: 94.4 },
+  { district: 'Korba', allocated: 58000000, utilized: 54000000, percentage: 93.1 },
+  { district: 'Kanker', allocated: 63000000, utilized: 57000000, percentage: 90.5 },
 ];
 
 const performanceDistribution = [
@@ -73,12 +73,12 @@ export function PerformanceDashboard() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="malnutrition" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="malnutrition">Malnutrition Rates</TabsTrigger>
-              <TabsTrigger value="recovery">Recovery Rates</TabsTrigger>
-              <TabsTrigger value="funding">Fund Utilization</TabsTrigger>
-              <TabsTrigger value="performance">Performance Distribution</TabsTrigger>
-            </TabsList>
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="malnutrition" className="text-xs">Malnutrition Rates</TabsTrigger>
+            <TabsTrigger value="recovery" className="text-xs">Recovery Rates</TabsTrigger>
+            <TabsTrigger value="funding" className="text-xs">Fund Utilization</TabsTrigger>
+            <TabsTrigger value="performance" className="text-xs">Performance Distribution</TabsTrigger>
+          </TabsList>
             
             <TabsContent value="malnutrition" className="space-y-4">
               <Card>

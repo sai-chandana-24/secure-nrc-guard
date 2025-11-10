@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
+  BarChart3,
+} from "lucide-react";
+import {
   Shield,
   Building2,
   MapPin,
   Users,
   Heart,
   Hospital,
-  ChevronRight,
   Globe,
   TrendingUp,
   Activity,
@@ -21,10 +23,41 @@ import {
   CheckCircle,
   Menu,
   X,
+  Zap,
+  Database,
+  Target,
+  PieChart as PieChartIcon,
+  ShieldCheck,
+  Server,
+  FileCheck,
+  LayoutGrid,
 } from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
 import chhattishgarhLogo from "@/assets/chhattisgarh-logo.png";
-import indiaEmblem from "@/assets/india-emblem.png";
 import digitalIndiaLogo from "@/assets/digital-india-logo.png";
+
+// --- Official Remote Image URLs ---
+const CG_LOGO_URL = "https://cgstate.gov.in/user-assets/images/logo-cg.png";
+const GOVERNOR_IMAGE_URL = "https://cgstate.gov.in/file-profile-image/L2RhdGFfY2dzdGF0ZS9jZ3N0YXRlMjAyNV91cGxvYWRzL2dvdmVybm9yLXByb2ZpbGUvR1ZfSW1hZ2UucG5n";
+const CM_IMAGE_URL = "https://cgstate.gov.in/file-profile-image/L2RhdGFfY2dzdGF0ZS9jZ3N0YXRlMjAyNV91cGxvYWRzL2NtLXByb2ZpbGUvQ01fSW1hZ2UucG5n";
+// New Logo added here
+const POSHAN_LOGO_URL = "https://tse3.mm.bing.net/th/id/OIP.Y0H2rW6xhp1sxQYHVS_9PwHaJc?pid=Api&P=0&h=180";
 
 export const LandingPage = () => {
   const navigate = useNavigate();
@@ -39,6 +72,108 @@ export const LandingPage = () => {
     navigate(`/login?email=${encodeURIComponent(email)}&redirect=/`);
   };
 
+  // --- Dummy Data for Charts ---
+  const treatmentData = [
+    { name: "May", treated: 1890, admitted: 2200 },
+    { name: "Jun", treated: 2390, admitted: 2500 },
+    { name: "Jul", treated: 2900, admitted: 3100 },
+    { name: "Aug", treated: 3500, admitted: 3800 },
+    { name: "Sep", treated: 3800, admitted: 4200 },
+    { name: "Oct", treated: 3600, admitted: 3900 },
+  ];
+
+  const admissionData = [
+    { name: "Jan", admissions: 4500 },
+    { name: "Feb", admissions: 3500 },
+    { name: "Mar", admissions: 5200 },
+    { name: "Apr", admissions: 3000 },
+    { name: "May", admissions: 2200 },
+    { name: "Jun", admissions: 2500 },
+    { name: "Jul", admissions: 3100 },
+    { name: "Aug", admissions: 3800 },
+    { name: "Sep", admissions: 4200 },
+    { name: "Oct", admissions: 3900 },
+  ];
+
+  const recoveryRateData = [
+    { name: "Week 1", rate: 82 },
+    { name: "Week 2", rate: 85 },
+    { name: "Week 3", rate: 89 },
+    { name: "Week 4", rate: 92 },
+    { name: "Week 5", rate: 94 },
+    { name: "Week 6", rate: 95 },
+  ];
+
+  const centerStatusData = [
+    { name: language === "hi" ? "सक्रिय" : "Active", value: 145, color: "#22c55e" },
+    { name: language === "hi" ? "रखरखाव" : "Maintenance", value: 8, color: "#eab308" },
+    { name: language === "hi" ? "निष्क्रिय" : "Inactive", value: 3, color: "#ef4444" },
+  ];
+  // -----------------------------
+
+  // --- Translation Helper for Arrays (Moved inside component to access 'language' state) ---
+  const keyFeaturesList = [
+    {
+      icon: ShieldCheck,
+      color: "text-blue-600",
+      bgColor: "bg-blue-50 dark:bg-blue-950/30",
+      borderColor: "group-hover:border-blue-500/50",
+      accentColor: "bg-blue-500",
+      title: language === "hi" ? "सुरक्षित डेटा" : "Secure Data",
+      description: language === "hi" ? "सैन्य-स्तर का एन्क्रिप्शन और एक्सेस कंट्रोल।" : "Military-grade encryption & access controls.",
+    },
+    {
+      icon: Zap,
+      color: "text-amber-600",
+      bgColor: "bg-amber-50 dark:bg-amber-950/30",
+      borderColor: "group-hover:border-amber-500/50",
+      accentColor: "bg-amber-500",
+      title: language === "hi" ? "रीयल-टाइम" : "Real-Time",
+      description: language === "hi" ? "तत्काल निर्णय लेने के लिए शून्य विलंबता अपडेट।" : "Zero-latency updates for instant decision making.",
+    },
+    {
+      icon: LayoutGrid,
+      color: "text-indigo-600",
+      bgColor: "bg-indigo-50 dark:bg-indigo-950/30",
+      borderColor: "group-hover:border-indigo-500/50",
+      accentColor: "bg-indigo-500",
+      title: language === "hi" ? "स्केलेबल" : "Scalable",
+      description: language === "hi" ? "राज्य की बदलती जरूरतों के साथ बढ़ने के लिए निर्मित।" : "Built to grow with the state's evolving needs.",
+    },
+    {
+      icon: FileCheck,
+      color: "text-emerald-600",
+      bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
+      borderColor: "group-hover:border-emerald-500/50",
+      accentColor: "bg-emerald-500",
+      title: language === "hi" ? "ऑडिट योग्य" : "Auditable",
+      description: language === "hi" ? "100% पारदर्शिता के लिए पूर्ण अपरिवर्तनीय ट्रेल्स।" : "Complete immutable trails for 100% transparency.",
+    },
+  ];
+
+  const missionGridList = [
+    {
+      icon: Database,
+      title: language === "hi" ? "केंद्रीकृत डेटा" : "Centralized Data",
+      desc: language === "hi" ? "सभी 33 जिलों के लिए एकीकृत रिकॉर्ड।" : "Unified records for all 33 districts.",
+    },
+    {
+      icon: Target,
+      title: language === "hi" ? "लक्षित हस्तक्षेप" : "Targeted Care",
+      desc: language === "hi" ? "उच्च जोखिम वाले क्षेत्रों की AI-संचालित पहचान।" : "AI-driven identification of high-risk areas.",
+    },
+    {
+      icon: TrendingUp,
+      title: language === "hi" ? "वास्तविक समय निगरानी" : "Real-time Monitoring",
+      desc: language === "hi" ? "ब्लॉक से राज्य स्तर तक लाइव ट्रैकिंग।" : "Live tracking from block to state level.",
+    },
+    {
+      icon: ShieldCheck,
+      title: language === "hi" ? "शून्य भ्रष्टाचार" : "Zero Corruption",
+      desc: language === "hi" ? "ब्लॉकचेन-सत्यापित फंड उपयोग।" : "Blockchain-verified fund utilization.",
+    },
+  ];
+
   const dashboards = [
     {
       title: language === "hi" ? "राज्य प्रशासक" : "State Administrator",
@@ -50,7 +185,7 @@ export const LandingPage = () => {
       email: "admin@chhattisgarh.gov.in",
       role: "admin",
       bgGradient: "from-blue-600 to-blue-800",
-      stats: { centers: "100+", districts: "28", staff: "5000+" },
+      stats: { centers: "100+", districts: "33", staff: "5000+" },
     },
     {
       title: language === "hi" ? "जिला अधिकारी" : "District Officer",
@@ -105,92 +240,96 @@ export const LandingPage = () => {
     },
   ];
 
-  const stats = [
-    { label: language === "hi" ? "कुल बच्चे" : "Total Children", value: "2,45,678", trend: "+12%", icon: Users },
-    { label: language === "hi" ? "सक्रिय केंद्र" : "Active Centers", value: "156", trend: "+8%", icon: Heart },
-    { label: language === "hi" ? "आवंटित फंड" : "Funds Allocated", value: "₹45.2Cr", trend: "+15%", icon: TrendingUp },
-    { label: language === "hi" ? "सफलता दर" : "Success Rate", value: "89.5%", trend: "+3%", icon: Activity },
-  ];
-
   return (
     <div className="min-h-screen bg-background">
       {/* Professional Government Header */}
-      <header className="bg-card border-b-4 border-primary sticky top-0 z-50 govt-shadow-md">
-        <div className="container mx-auto px-4">
-          {/* Top Bar */}
-          <div className="flex items-center justify-between py-2 border-b border-border text-sm">
-            <div className="flex items-center gap-4 text-muted-foreground">
-              <span className="hidden md:inline">Last Updated: {new Date().toLocaleDateString("en-IN")}</span>
-              <span className="hidden md:inline">•</span>
-              <span className="hidden md:inline">Screen Reader Access</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant={language === "en" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setLanguage("en")}
-                className="text-xs h-7 px-2"
-              >
-                English
-              </Button>
-              <Button
-                variant={language === "hi" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setLanguage("hi")}
-                className="text-xs h-7 px-2"
-              >
-                हिन्दी
-              </Button>
-            </div>
-          </div>
-
-          {/* Main Header */}
-          <div className="flex items-center justify-between py-4">
+      <header className="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4 py-2 md:py-4">
+          <div className="flex items-center justify-between">
+            {/* Left Side: Logos and Main Title */}
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-3">
-                <img src={indiaEmblem} alt="Government of India" className="h-14 md:h-16" />
-                <img src={chhattishgarhLogo} alt="Chhattisgarh Government" className="h-14 md:h-16" />
+                <img src={chhattishgarhLogo} alt="Government of India" className="h-12 md:h-16 w-auto" />
+                <img src={CG_LOGO_URL} alt="Chhattisgarh Government" className="h-12 md:h-16 w-auto" />
               </div>
-              <div className="border-l-2 border-border pl-4">
-                <h1 className="text-base md:text-xl font-bold text-primary leading-tight">
-                  {language === "hi"
-                    ? "छत्तीसगढ़ पोषणीय पुनर्वास केंद्र"
-                    : "Chhattisgarh Nutrition Rehabilitation Centers"}
+              <div className="hidden sm:block pl-3">
+                <h1 className="text-2xl md:text-3xl font-bold text-black leading-none tracking-tight">
+                  {language === "hi" ? "राज्य पोर्टल" : "STATE PORTAL"}
                 </h1>
-                <p className="text-xs md:text-sm text-muted-foreground leading-tight">
-                  {language === "hi"
-                    ? "छत्तीसगढ़ सरकार - डिजिटल प्रबंधन प्रणाली"
-                    : "Government of Chhattisgarh - Digital Management System"}
-                </p>
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge className="bg-success text-success-foreground text-xs">Digital India</Badge>
-                  <Badge className="bg-accent-light text-accent text-xs hidden md:inline-flex">
-                    Blockchain Secured
-                  </Badge>
+                <h2 className="text-sm md:text-base font-bold text-[#d91b5c] leading-tight mt-1">
+                  {language === "hi" ? "छत्तीसगढ़ शासन" : "GOVERNMENT OF CHHATTISGARH"}
+                </h2>
+              </div>
+            </div>
+
+            {/* Middle: Dignitaries (Translated) */}
+            <div className="hidden xl:flex items-center gap-6 mx-6">
+              <div className="flex items-center gap-3 text-right">
+                <div>
+                  <div className="text-sm font-bold text-black leading-tight">
+                    {language === "hi" ? "श्री रमेन डेका" : "Shri Ramen Deka"}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {language === "hi" ? "माननीय राज्यपाल" : "Hon'ble Governor"}
+                  </div>
+                </div>
+                <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-[#2e7d32]/30 p-0.5">
+                  <img src={GOVERNOR_IMAGE_URL} alt="Hon'ble Governor" className="w-full h-full object-cover rounded-full" />
+                </div>
+              </div>
+              <div className="flex items-center gap-3 text-right">
+                <div>
+                  <div className="text-sm font-bold text-black leading-tight">
+                    {language === "hi" ? "श्री विष्णु देव साय" : "Shri Vishnu Deo Sai"}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {language === "hi" ? "माननीय मुख्यमंत्री" : "Hon'ble Chief Minister"}
+                  </div>
+                </div>
+                <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-[#2e7d32]/30 p-0.5">
+                  <img src={CM_IMAGE_URL} alt="Hon'ble CM" className="w-full h-full object-cover rounded-full" />
                 </div>
               </div>
             </div>
 
-            {/* Auth Buttons */}
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="default"
-                onClick={() => navigate("/login")}
-                className="hidden md:flex items-center gap-2 border-2 hover:bg-primary hover:text-primary-foreground"
-              >
-                <Shield className="w-4 h-4" />
-                {language === "hi" ? "लॉगिन" : "Login"}
-              </Button>
-              <Button
-                size="default"
-                onClick={() => navigate("/signup")}
-                className="hidden md:flex items-center gap-2 govt-gradient text-white"
-              >
-                {language === "hi" ? "साइन अप" : "Sign Up"}
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-              <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {/* Right Side: Auth & Lang */}
+            <div className="flex items-center gap-1 md:gap-4">
+              {/* Language Tools */}
+              <div className="hidden md:flex items-center gap-3 text-sm font-medium text-slate-700 mr-2">
+                <div className="flex items-center border rounded-md overflow-hidden">
+                  <button
+                    onClick={() => setLanguage('en')}
+                    className={`px-3 py-1.5 ${language === 'en' ? 'bg-slate-800 text-white' : 'bg-white hover:bg-slate-100'}`}
+                  >
+                    ENG
+                  </button>
+                  <button
+                    onClick={() => setLanguage('hi')}
+                    className={`px-3 py-1.5 ${language === 'hi' ? 'bg-slate-800 text-white' : 'bg-white hover:bg-slate-100'}`}
+                  >
+                    हिन्दी
+                  </button>
+                </div>
+              </div>
+
+              {/* Auth Buttons */}
+              <div className="hidden md:flex items-center gap-2">
+                <Button
+                  className="bg-slate-800 hover:bg-slate-900 text-white font-semibold px-6"
+                  onClick={() => navigate("/login")}
+                >
+                  {language === "hi" ? "लॉगिन" : "Login"}
+                </Button>
+                <Button
+                  className="bg-slate-800 hover:bg-slate-900 text-white font-semibold px-6"
+                  onClick={() => navigate("/signup")}
+                >
+                  {language === "hi" ? "पंजीकरण" : "Register"}
+                </Button>
+              </div>
+
+              {/* Mobile Menu Toggle */}
+              <button className="md:hidden p-2 text-slate-800" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
@@ -198,29 +337,34 @@ export const LandingPage = () => {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden py-4 border-t border-border space-y-2">
+            <div className="md:hidden py-4 border-t border-border space-y-3 mt-4 bg-slate-50 px-4 rounded-b-lg">
+              <div className="flex items-center justify-center gap-4 pb-4 border-b">
+                <button
+                  onClick={() => setLanguage('en')}
+                  className={`px-4 py-2 rounded-md text-sm font-medium ${language === 'en' ? 'bg-slate-800 text-white' : 'bg-white border'}`}
+                >
+                  English
+                </button>
+                <button
+                  onClick={() => setLanguage('hi')}
+                  className={`px-4 py-2 rounded-md text-sm font-medium ${language === 'hi' ? 'bg-slate-800 text-white' : 'bg-white border'}`}
+                >
+                  हिन्दी
+                </button>
+              </div>
               <Button
-                variant="outline"
+                className="w-full bg-slate-800 hover:bg-slate-900 text-white"
                 size="lg"
-                onClick={() => {
-                  navigate("/login");
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full flex items-center justify-center gap-2 border-2"
+                onClick={() => { navigate("/login"); setMobileMenuOpen(false); }}
               >
-                <Shield className="w-4 h-4" />
                 {language === "hi" ? "लॉगिन" : "Login"}
               </Button>
               <Button
+                className="w-full bg-slate-800 hover:bg-slate-900 text-white"
                 size="lg"
-                onClick={() => {
-                  navigate("/signup");
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full flex items-center justify-center gap-2 govt-gradient text-white"
+                onClick={() => { navigate("/signup"); setMobileMenuOpen(false); }}
               >
-                {language === "hi" ? "साइन अप" : "Sign Up"}
-                <ChevronRight className="w-4 h-4" />
+                {language === "hi" ? "पंजीकरण" : "Register"}
               </Button>
             </div>
           )}
@@ -231,16 +375,27 @@ export const LandingPage = () => {
       <section className="relative py-16 md:py-24 govt-hero-gradient text-primary-foreground overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE2YzAgMy4zMTQtMi42ODYgNi02IDZzLTYtMi42ODYtNi02IDIuNjg2LTYgNi02IDYgMi42ODYgNiA2eiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
         <div className="relative container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto">
-            <Badge className="bg-card/20 text-primary-foreground border-primary-foreground/30 mb-4 md:mb-6 text-xs md:text-sm px-3 md:px-4 py-1 md:py-2">
+          <div className="max-w-5xl mx-auto">
+            {/* <Badge className="bg-card/20 text-primary-foreground border-primary-foreground/30 mb-4 md:mb-6 text-xs md:text-sm px-3 md:px-4 py-1 md:py-2">
               <Star className="w-3 h-3 md:w-4 md:h-4 mr-2" />
               {language === "hi" ? "पुरस्कार विजेता डिजिटल प्लेटफॉर्म" : "Award-Winning Digital Platform"}
-            </Badge>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 leading-tight">
-              {language === "hi"
-                ? "बाल पोषण प्रबंधन का डिजिटल परिवर्तन"
-                : "Digital Transformation of Child Nutrition Management"}
-            </h2>
+            </Badge> */}
+
+            {/* NEW: H2 with Aligned Logo to the left */}
+            <div className="flex items-center justify-center gap-4 md:gap-6 mb-4 md:mb-6">
+              <img
+                src={POSHAN_LOGO_URL}
+                alt="Poshan Abhiyaan"
+                className="h-20 md:h-32 w-auto object-contain drop-shadow-lg p-2 rounded-xl bg-background/10 backdrop-blur-sm" // Increased size and added subtle background for better visibility against gradient
+              />
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight text-left md:text-center">
+                {language === "hi"
+                  ? "बाल पोषण प्रबंधन का डिजिटल परिवर्तन"
+                  : "Ensuring every child is nourished"}
+              </h2>
+            </div>
+            {/* End of Change */}
+
             <p className="text-base md:text-xl mb-6 md:mb-8 text-primary-foreground/90 max-w-3xl mx-auto leading-relaxed">
               {language === "hi"
                 ? "छत्तीसगढ़ राज्य में अत्याधुनिक तकनीक, पारदर्शी शासन और साक्ष्य-आधारित हस्तक्षेप के माध्यम से बाल कल्याण को आगे बढ़ाना"
@@ -254,39 +409,185 @@ export const LandingPage = () => {
               </Badge>
               <Badge className="bg-card/20 text-primary-foreground border-primary-foreground/30 text-xs px-2 md:px-4 py-1 md:py-2">
                 <Globe className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                99.9% Uptime
+                {language === "hi" ? "99.9% अपटाइम" : "99.9% Uptime"}
               </Badge>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Live Statistics */}
-      <section className="py-12 md:py-16 bg-card govt-shadow-lg -mt-8 md:-mt-12 mx-4 md:mx-8 rounded-xl relative z-10">
+      {/* Live Dashboard Statistics */}
+      <section className="py-12 md:py-16 bg-muted/30 -mt-8 md:-mt-12 relative z-10">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-              {language === "hi" ? "लाइव डैशबोर्ड आंकड़े" : "Live Dashboard Statistics"}
-            </h2>
-            <div className="w-20 h-1 govt-gradient mx-auto rounded"></div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {stats.map((stat, index) => {
-              const Icon = stat.icon;
-              return (
-                <Card key={index} className="text-center hover:shadow-xl govt-transition border-0 govt-shadow-md">
-                  <CardContent className="pt-6 pb-6">
-                    <Icon className="w-8 h-8 md:w-10 md:h-10 mx-auto mb-3 text-primary" />
-                    <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-1">{stat.value}</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">{stat.label}</p>
-                    <span className="text-success text-xs font-semibold flex items-center justify-center gap-1">
-                      <TrendingUp className="w-3 h-3" />
-                      {stat.trend}
-                    </span>
-                  </CardContent>
-                </Card>
-              );
-            })}
+          <div className="bg-card rounded-2xl shadow-xl border border-border/50 p-6 md:p-8">
+            <div className="text-center mb-8 md:mb-10">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                {language === "hi" ? "लाइव डैशबोर्ड आंकड़े" : "Live Dashboard Analytics"}
+              </h2>
+              <div className="w-20 h-1 govt-gradient mx-auto rounded"></div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+              {/* Chart 1: Children Treated vs Admitted Trend (Area Chart) */}
+              <Card className="border-2 border-border">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                    <Users className="w-5 h-5 text-primary" />
+                    {language === "hi" ? "उपचार के रुझान (पिछले 6 महीने)" : "Treatment Trends (Last 6 Months)"}
+                  </CardTitle>
+                  <CardDescription>
+                    {language === "hi" ? "भर्ती बनाम सफलतापूर्वक इलाज किए गए बच्चे" : "Children admitted vs. successfully treated"}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="h-[300px] pt-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={treatmentData}>
+                      <defs>
+                        <linearGradient id="colorTreated" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                        </linearGradient>
+                        <linearGradient id="colorAdmitted" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.3} />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                      <Tooltip
+                        contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                      />
+                      <Legend verticalAlign="top" height={36} iconType="circle" />
+                      <Area
+                        type="monotone"
+                        dataKey="admitted"
+                        stroke="#3b82f6"
+                        fillOpacity={1}
+                        fill="url(#colorAdmitted)"
+                        name={language === "hi" ? "भर्ती" : "Admitted"}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="treated"
+                        stroke="#22c55e"
+                        fillOpacity={1}
+                        fill="url(#colorTreated)"
+                        name={language === "hi" ? "उपचारित" : "Treated"}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Chart 2: Monthly Admissions (Bar Chart) */}
+              <Card className="border-2 border-border">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-primary" />
+                    {language === "hi" ? "मासिक प्रवेश (वर्तमान वर्ष)" : "Monthly Admissions (Current Year)"}
+                  </CardTitle>
+                  <CardDescription>
+                    {language === "hi" ? "प्रति माह कुल नए बाल प्रवेश" : "Total new child admissions per month"}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="h-[300px] pt-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={admissionData}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.3} />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                      <Tooltip
+                        cursor={{ fill: "rgba(0,0,0,0.05)" }}
+                        contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                      />
+                      <Bar
+                        dataKey="admissions"
+                        fill="hsl(var(--primary))"
+                        radius={[4, 4, 0, 0]}
+                        name={language === "hi" ? "प्रवेश" : "Admissions"}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Chart 3: Recovery Rate Improvement (Line Chart) */}
+              <Card className="border-2 border-border">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-success" />
+                    {language === "hi" ? "सुधार दर में वृद्धि" : "Recovery Rate Improvement"}
+                  </CardTitle>
+                  <CardDescription>
+                    {language === "hi" ? "सफल रिकवरी प्रतिशत की साप्ताहिक ट्रैकिंग" : "Weekly tracking of successful recovery percentages"}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="h-[300px] pt-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={recoveryRateData}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.3} />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                      <YAxis
+                        domain={[60, 100]}
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12 }}
+                        tickFormatter={(value) => `${value}%`}
+                      />
+                      <Tooltip
+                        contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                        formatter={(value) => [`${value}%`, language === "hi" ? "सुधार दर" : "Recovery Rate"]}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="rate"
+                        stroke="#22c55e"
+                        strokeWidth={3}
+                        dot={{ r: 4, fill: "#22c55e", strokeWidth: 2, stroke: "#fff" }}
+                        activeDot={{ r: 6 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Chart 4: Center Status (Pie Chart) */}
+              <Card className="border-2 border-border">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-amber-500" />
+                    {language === "hi" ? "केंद्र की स्थिति" : "NRC Center Status"}
+                  </CardTitle>
+                  <CardDescription>
+                    {language === "hi" ? "सभी 156 केंद्रों की परिचालन स्थिति" : "Operational status of all 156 centers"}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="h-[300px] pt-4 flex items-center justify-center">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={centerStatusData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={90}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {centerStatusData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                      />
+                      <Legend iconType="circle" layout="vertical" verticalAlign="middle" align="right" />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
@@ -295,13 +596,13 @@ export const LandingPage = () => {
       <section className="py-16 md:py-20 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 govt-gradient bg-clip-text text-transparent">
-              {language === "hi" ? "विभाग सांख्यिकी" : "Department Statistics"}
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-foreground">
+              {language === "hi" ? "प्रशासनिक प्रदर्शन मेट्रिक्स" : "Administrative Performance Metrics"}
             </h2>
             <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto">
               {language === "hi"
-                ? "विभिन्न भूमिकाओं और उनके प्रदर्शन संकेतकों का अवलोकन"
-                : "Overview of different roles and their performance indicators"}
+                ? "शासन के सभी स्तरों पर प्रमुख संकेतक"
+                : "Key indicators across all levels of governance."}
             </p>
             <div className="w-24 h-1 govt-gradient mx-auto rounded mt-4"></div>
           </div>
@@ -314,6 +615,7 @@ export const LandingPage = () => {
                   key={index}
                   className="group relative overflow-hidden border-2 border-border hover:border-primary govt-transition hover:shadow-2xl animate-fade-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
+                  onClick={() => handleDashboardClick(dashboard.email)}
                 >
                   <div
                     className={`absolute inset-0 bg-gradient-to-br ${dashboard.bgGradient} opacity-5 group-hover:opacity-10 govt-transition`}
@@ -356,136 +658,224 @@ export const LandingPage = () => {
               );
             })}
           </div>
-
-          {/* Demo Credentials Info */}
-          <Card className="mt-12 bg-accent-light border-2 border-accent">
-            <CardContent className="p-6 md:p-8">
-              <div className="text-center">
-                <Shield className="w-10 h-10 md:w-12 md:h-12 text-accent mx-auto mb-4" />
-                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">
-                  {language === "hi" ? "डेमो एक्सेस जानकारी" : "Demo Access Information"}
-                </h3>
-                <p className="text-sm md:text-base text-foreground mb-4">
-                  {language === "hi"
-                    ? "सभी डेमो खातों के लिए पासवर्ड का उपयोग करें: "
-                    : "Use password for all demo accounts: "}
-                  <span className="font-mono bg-accent text-accent-foreground px-3 py-1 rounded font-bold">
-                    admin123
-                  </span>
-                </p>
-                <p className="text-xs md:text-sm text-muted-foreground mb-4">
-                  {language === "hi"
-                    ? "किसी भी डैशबोर्ड कार्ड पर क्लिक करें और ऊपर दिए गए ईमेल और पासवर्ड के साथ लॉगिन करें"
-                    : "Click on any dashboard card and login with the email shown and password above"}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </section>
 
-      {/* Key Features Section */}
-      <section className="py-16 md:py-20 bg-secondary/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {language === "hi" ? "प्रमुख विशेषताएं" : "Key Features"}
+      {/* NEW CLEAN & ENGAGING Key Features Section */}
+      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 px-4 py-1.5 bg-primary/10 text-primary border-primary/20 rounded-full">
+              {language === "hi" ? "हमारा लाभ" : "Our Advantages"}
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+              {language === "hi" ? "डिजिटल एक्सीलेंस के स्तंभ" : "Pillars of Digital Excellence"}
             </h2>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               {language === "hi"
-                ? "उन्नत तकनीकों के साथ बाल पोषण प्रबंधन"
-                : "Advanced child nutrition management with cutting-edge technology"}
+                ? "पारदर्शिता, सुरक्षा और दक्षता सुनिश्चित करने के लिए डिज़ाइन की गई प्रमुख विशेषताएं।"
+                : "Core features designed to ensure transparency, security, and operational efficiency across the state."}
             </p>
-            <div className="w-24 h-1 govt-gradient mx-auto rounded mt-4"></div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {[
-              {
-                icon: Shield,
-                title: language === "hi" ? "सुरक्षित डेटा" : "Secure Data",
-                description: language === "hi" ? "ब्लॉकचेन-आधारित डेटा सुरक्षा" : "Blockchain-based data security",
-              },
-              {
-                icon: Activity,
-                title: language === "hi" ? "रीयल-टाइम ट्रैकिंग" : "Real-time Tracking",
-                description: language === "hi" ? "लाइव डैशबोर्ड और अलर्ट" : "Live dashboards and alerts",
-              },
-              {
-                icon: Globe,
-                title: language === "hi" ? "क्लाउड-आधारित" : "Cloud-based",
-                description: language === "hi" ? "कहीं से भी पहुंच" : "Access from anywhere",
-              },
-              {
-                icon: CheckCircle,
-                title: language === "hi" ? "पारदर्शिता" : "Transparency",
-                description: language === "hi" ? "पूर्ण ऑडिट ट्रेल" : "Complete audit trail",
-              },
-            ].map((feature, index) => {
-              const FeatureIcon = feature.icon;
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {keyFeaturesList.map((feature, index) => {
+              const Icon = feature.icon;
               return (
-                <Card
+                <div
                   key={index}
-                  className="text-center hover:shadow-xl govt-transition border-0 govt-shadow-md animate-fade-in"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  className={`group relative bg-card rounded-xl p-6 border-2 border-transparent ${feature.borderColor} shadow-sm hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-1 overflow-hidden`}
                 >
-                  <CardContent className="pt-8 pb-8">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full govt-gradient flex items-center justify-center">
-                      <FeatureIcon className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-lg md:text-xl font-bold text-foreground mb-2">{feature.title}</h3>
-                    <p className="text-sm text-muted-foreground">{feature.description}</p>
-                  </CardContent>
-                </Card>
+                  <div
+                    className={`w-14 h-14 rounded-full ${feature.bgColor} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                  >
+                    <Icon className={`w-7 h-7 ${feature.color}`} />
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
+                  {/* Subtle Bottom Accent Bar on Hover */}
+                  <div
+                    className={`absolute bottom-0 left-0 w-full h-1 ${feature.accentColor} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left`}
+                  ></div>
+                </div>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* Government Initiatives Section */}
-      <section className="py-16 md:py-20 bg-card">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <Badge className="bg-success text-success-foreground mb-4">
-                {language === "hi" ? "सरकारी पहल" : "Government Initiative"}
-              </Badge>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-                {language === "hi" ? "राष्ट्रीय पोषण मिशन" : "National Nutrition Mission"}
-              </h2>
-              <p className="text-muted-foreground text-base md:text-lg mb-6 leading-relaxed">
+      {/* Mission Section */}
+      <section className="py-24 bg-card relative overflow-hidden">
+        {/* Abstract Background Patterns */}
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Text Content Side */}
+            <div className="space-y-8">
+              <div>
+                <Badge
+                  variant="outline"
+                  className="border-primary/30 text-primary mb-4 px-4 py-1 text-sm font-semibold uppercase tracking-wider bg-primary/5"
+                >
+                  {language === "hi" ? "हमारा मिशन" : "Our Mission"}
+                </Badge>
+                <h2 className="text-4xl lg:text-5xl font-extrabold leading-tight text-foreground">
+                  {language === "hi" ? "राष्ट्रीय पोषण मिशन" : "National Nutrition Mission"}
+                  <span className="text-primary">.</span>
+                </h2>
+              </div>
+
+              <p className="text-lg text-muted-foreground leading-relaxed">
                 {language === "hi"
-                  ? "छत्तीसगढ़ सरकार बच्चों के स्वास्थ्य और पोषण की स्थिति में सुधार के लिए प्रतिबद्ध है। यह डिजिटल प्लेटफॉर्म राज्य भर में पोषण पुनर्वास केंद्रों की निगरानी और प्रबंधन को सक्षम बनाता है।"
-                  : "The Government of Chhattisgarh is committed to improving child health and nutrition status. This digital platform enables monitoring and management of Nutrition Rehabilitation Centers across the state."}
+                  ? "छत्तीसगढ़ सरकार एक स्वस्थ भविष्य के निर्माण के लिए प्रतिबद्ध है। हमारा एकीकृत डिजिटल प्लेटफॉर्म यह सुनिश्चित करता है कि हर बच्चे को सही समय पर सही देखभाल मिले।"
+                  : "Dedicated to eradicating malnutrition through technology. Our platform provides a unified, real-time view of every Nutrition Rehabilitation Center across Chhattisgarh, ensuring no child is left behind."}
               </p>
-              <ul className="space-y-3 mb-8">
-                {[
-                  language === "hi" ? "डेटा-संचालित निर्णय लेना" : "Data-driven decision making",
-                  language === "hi" ? "बेहतर समन्वय और संचार" : "Better coordination and communication",
-                  language === "hi" ? "पारदर्शी फंड आवंटन" : "Transparent fund allocation",
-                  language === "hi" ? "बढ़ी हुई जवाबदेही" : "Enhanced accountability",
-                ].map((item, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-success mt-0.5 flex-shrink-0" />
-                    <span className="text-foreground">{item}</span>
-                  </li>
+
+              {/* Engaging Feature Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+                {missionGridList.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start p-4 rounded-xl bg-background border border-border/50 hover:border-primary/50 transition-colors group"
+                  >
+                    <div className="mr-4 mt-1 p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                      <item.icon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-foreground">{item.title}</h4>
+                      <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
+
+              {/* System Trust Indicators */}
+              <div className="flex flex-wrap items-center gap-3 pt-6 mt-4 border-t border-border/40">
+                <span className="text-sm font-medium text-muted-foreground mr-2">
+                  {language === "hi" ? "सिस्टम स्थिति:" : "System Status:"}
+                </span>
+                <Badge
+                  variant="secondary"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20"
+                >
+                  <Server className="w-3.5 h-3.5" />
+                  {language === "hi" ? "ऑनलाइन" : "All Systems Operational"}
+                </Badge>
+                <Badge
+                  variant="secondary"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  {language === "hi" ? "सत्यापित" : "Gov.in Verified"}
+                </Badge>
+              </div>
             </div>
-            <div className="relative">
-              <div className="aspect-video rounded-xl overflow-hidden govt-shadow-lg border-4 border-primary/20">
-                <div className="w-full h-full govt-gradient flex items-center justify-center">
-                  <div className="text-center text-white p-8">
-                    <Hospital className="w-24 h-24 mx-auto mb-4 opacity-80" />
-                    <h3 className="text-2xl font-bold mb-2">
-                      {language === "hi" ? "156+ सक्रिय केंद्र" : "156+ Active Centers"}
-                    </h3>
-                    <p className="text-white/90">{language === "hi" ? "पूरे छत्तीसगढ़ में" : "Across Chhattisgarh"}</p>
+
+            {/* Visual Side - Layered Mission Control Card */}
+            <div className="relative lg:ml-12">
+              {/* Main "Mission Control" Card */}
+              <div className="relative bg-background rounded-3xl govt-shadow-2xl border border-border/50 overflow-hidden z-20">
+                {/* Card Header */}
+                <div className="px-6 py-4 border-b border-border/50 bg-muted/30 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                    <span className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                      {language === "hi" ? "लाइव मिशन स्थिति" : "Live Mission Status"}
+                    </span>
+                  </div>
+                  <Badge variant="secondary" className="font-mono text-xs">
+                    v2.1.0-stable
+                  </Badge>
+                </div>
+
+                {/* Card Body */}
+                <div className="p-6 space-y-6">
+                  {/* Top Stats Row */}
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20">
+                      <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">33</div>
+                      <div className="text-[10px] uppercase font-bold text-muted-foreground mt-1">
+                        {language === "hi" ? "सक्रिय जिले" : "Districts Active"}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-green-50 dark:bg-green-900/20">
+                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">98%</div>
+                      <div className="text-[10px] uppercase font-bold text-muted-foreground mt-1">
+                        {language === "hi" ? "अपटाइम" : "Uptime"}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20">
+                      <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">15k+</div>
+                      <div className="text-[10px] uppercase font-bold text-muted-foreground mt-1">
+                        {language === "hi" ? "दैनिक अपडेट" : "Daily Updates"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Progress Bars */}
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="font-medium">
+                          {language === "hi" ? "बाल रिकवरी लक्ष्य" : "Child Recovery Targets"}
+                        </span>
+                        <span className="font-bold text-primary">85%</span>
+                      </div>
+                      <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                        <div className="h-full bg-primary w-[85%] rounded-full"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="font-medium">
+                          {language === "hi" ? "फंड उपयोग" : "Fund Utilization"}
+                        </span>
+                        <span className="font-bold text-success">92%</span>
+                      </div>
+                      <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                        <div className="h-full bg-success w-[92%] rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Action Area */}
+                  <div className="pt-4 border-t border-border/50 flex items-center justify-between">
+                    <div className="flex -space-x-2">
+                      {[1, 2, 3, 4].map((i) => (
+                        <div
+                          key={i}
+                          className="w-8 h-8 rounded-full border-2 border-background bg-gray-200 flex items-center justify-center text-[10px] font-bold text-muted-foreground"
+                        >
+                          U{i}
+                        </div>
+                      ))}
+                      <div className="w-8 h-8 rounded-full border-2 border-background bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
+                        +5k
+                      </div>
+                    </div>
+                    <div className="text-xs text-muted-foreground font-medium">
+                      {language === "hi" ? "सक्रिय फील्ड स्टाफ" : "Active Field Staff"}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 govt-accent-gradient rounded-full opacity-20 blur-2xl"></div>
-              <div className="absolute -top-6 -left-6 w-24 h-24 govt-gradient rounded-full opacity-20 blur-2xl"></div>
+
+              {/* Floating Decorative Elements */}
+              <div className="absolute -top-6 -right-6 z-30 animate-pulse">
+                <Badge className="px-4 py-2 bg-success text-success-foreground border-2 border-background shadow-lg flex items-center gap-2">
+                  <PieChartIcon className="w-4 h-4" /> 99.9% {language === "hi" ? "सटीकता" : "Accuracy"}
+                </Badge>
+              </div>
+              <div className="absolute -bottom-5 -left-5 z-30 animate-pulse delay-150">
+                <Badge className="px-4 py-2 bg-primary text-primary-foreground border-2 border-background shadow-lg flex items-center gap-2">
+                  <Activity className="w-4 h-4" /> 24/7 {language === "hi" ? "निगरानी" : "Monitoring"}
+                </Badge>
+              </div>
+
+              {/* Background Accent for Depth */}
+              <div className="absolute top-5 left-5 right-5 bottom-5 bg-primary/20 rounded-3xl blur-2xl -z-10 transform rotate-3"></div>
             </div>
           </div>
         </div>
@@ -527,9 +917,11 @@ export const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <img src={indiaEmblem} alt="Government of India" className="h-10 md:h-12 opacity-80" />
+                <img src={chhattishgarhLogo} alt="Government of India" className="h-10 md:h-12 opacity-80" />
                 <div>
-                  <h3 className="font-bold text-base md:text-lg">{language === "hi" ? "छत्तीसगढ़" : "Chhattisgarh"}</h3>
+                  <h3 className="font-bold text-base md:text-lg">
+                    {language === "hi" ? "छत्तीसगढ़" : "Chhattisgarh"}
+                  </h3>
                   <p className="text-muted-foreground text-xs md:text-sm">
                     {language === "hi" ? "सरकारी पोर्टल" : "Government Portal"}
                   </p>

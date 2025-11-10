@@ -89,7 +89,7 @@ export default function NRCDashboard() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="govt-card-gradient p-6 rounded-lg govt-shadow-md border">
+        <div id="top" className="govt-card-gradient p-6 rounded-lg govt-shadow-md border">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-primary mb-2">
@@ -107,8 +107,8 @@ export default function NRCDashboard() {
         </div>
 
         {/* Key Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="govt-shadow-lg">
+        <div id="stats" className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card id="admissions" className="govt-shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -120,7 +120,7 @@ export default function NRCDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="govt-shadow-lg">
+          <Card id="treatment" className="govt-shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -132,7 +132,7 @@ export default function NRCDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="govt-shadow-lg">
+          <Card id="progress" className="govt-shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -273,7 +273,7 @@ export default function NRCDashboard() {
 
         {/* Resource Requests & Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="govt-shadow-lg">
+          <Card id="resources" className="govt-shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Package className="w-5 h-5 text-primary" />
@@ -300,7 +300,7 @@ export default function NRCDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="govt-shadow-lg">
+          <Card id="alerts" className="govt-shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-primary" />

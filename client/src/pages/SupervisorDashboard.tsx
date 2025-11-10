@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,10 +12,28 @@ import {
   Activity,
   UserCheck,
   MessageSquare,
-  FileText
+  FileText,
+  Loader2 // Added Loader2
 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import axiosInstance from '@/utils/axiosInstance';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom'; // Added useNavigate
+// Import modal and form components for AI Chat
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter 
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
-const childValidationData = [
+// Static data - in a real app, this would likely come from an API
+const initialChildValidationData = [
   { id: 'CH001', name: 'Aarav Kumar', age: 3, weight: 8.5, muac: 10.5, height: 85, status: 'verified', condition: 'SAM' },
   { id: 'CH002', name: 'Priya Singh', age: 4, weight: 11.2, muac: 12.8, height: 92, status: 'pending', condition: 'MAM' },
   { id: 'CH003', name: 'Ravi Patel', age: 2, weight: 7.8, muac: 9.8, height: 78, status: 'rejected', condition: 'Critical' },
@@ -35,7 +53,50 @@ const followUpData = [
   { childId: 'CH112', name: 'Vikash Singh', dischargeDate: '2024-01-18', status: 'concerns', nextVisit: '2024-01-25' },
 ];
 
+type AllocationRow = {
+  _id: string;
+  districtName: string;
+  amount: number;
+  purpose?: string;
+  status: 'approved' | 'transferred' | 'utilized' | 'audited';
+  createdAt: string;
+  blockName?: string;
+  schoolName?: string;
+};
+
+type ChatMessage = {
+  sender: 'user' | 'ai';
+  text: string;
+};
+
 export default function SupervisorDashboard() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  // State for Child Validation Data (to allow local updates for demo)
+  const [childData, setChildData] = useState(initialChildValidationData);
+
+  // AI Chat State
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [aiChatType, setAiChatType] = useState<'nutrition' | 'health'>('nutrition'); // To differentiate chat context
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [aiInput, setAiInput] = useState("");
+  const [isAiResponding, setIsAiResponding] = useState(false);
+
+  const openAiChat = (type: 'nutrition' | 'health') => {
+    setAiChatType(type);
+    setChatMessages([
+        { 
+            sender: 'ai', 
+            text: type === 'nutrition' 
+                ? 'Hello supervisor. I am your AI Nutrition Support assistant. Ask me about dietary plans, SAM management, or supplement guidelines.' 
+                : 'Hello supervisor. I am your AI Health Guidelines assistant. Ask me about medical protocols, symptom checks, or referral criteria.'
+        }
+    ]);
+    setIsAiModalOpen(true);
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'verified':
@@ -77,11 +138,107 @@ export default function SupervisorDashboard() {
     }
   };
 
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['allocations', 'supervisor-view'],
+    queryFn: async () => {
+      const res = await axiosInstance.get('/allocations');
+      return res.data.allocations as AllocationRow[];
+    }
+  });
+
+  const assignSchool = useMutation({
+    mutationFn: async ({ id, schoolName }: { id: string; schoolName: string }) => {
+      await axiosInstance.patch(`/allocations/${id}/assign-school`, { schoolName });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['allocations', 'supervisor-view'] });
+      toast({ title: 'Assigned to school' });
+    },
+    onError: () => toast({ title: 'Failed to assign', variant: 'destructive' })
+  });
+
+  // --- NEW MUTATIONS ---
+
+  // 1. Child Action Mutation (Verify/Reject/Refer)
+  const childActionMutation = useMutation({
+    mutationFn: async ({ id, action }: { id: string, action: 'verify' | 'reject' | 'refer' }) => {
+        // Simulate API call
+        console.log(`Performing ${action} on child ${id}`);
+        return new Promise(resolve => setTimeout(resolve, 500));
+    },
+    onSuccess: (_, variables) => {
+        let newStatus = '';
+        let toastTitle = '';
+        let toastVariant: "default" | "destructive" | "success" | null = "default"; // Explicit type for variant
+
+        switch(variables.action) {
+            case 'verify':
+                newStatus = 'verified';
+                toastTitle = 'Child Record Verified';
+                toastVariant = 'success';
+                break;
+            case 'reject':
+                newStatus = 'rejected';
+                toastTitle = 'Child Record Rejected';
+                toastVariant = 'destructive';
+                break;
+            case 'refer':
+                 toastTitle = 'Child Referred to NRC';
+                 toastVariant = 'default';
+                 // Refer doesn't necessarily change 'status' in this simple model, but could in a real app
+                 break;
+        }
+
+        if (newStatus) {
+             setChildData(currentData => 
+                currentData.map(child => 
+                    child.id === variables.id ? { ...child, status: newStatus } : child
+                )
+            );
+        }
+        toast({ title: toastTitle, variant: toastVariant as any }); // Cast to any to avoid strict type issues if needed, or ensure types match exactly
+    }
+  });
+
+  // 2. Generate Validation Report Mutation
+  const generateReportMutation = useMutation({
+    mutationFn: async () => {
+      return new Promise(resolve => setTimeout(resolve, 2000));
+    },
+    onMutate: () => {
+      toast({ title: 'Generating Report...', description: 'Compiling validation data.' });
+    },
+    onSuccess: () => {
+      toast({ title: 'Report Ready', description: 'Validation report downloaded.', variant: 'default' });
+    }
+  });
+
+  // 3. AI Chat Handler
+  const handleSendAiMessage = () => {
+    if (!aiInput.trim()) return;
+    const userMessage: ChatMessage = { sender: 'user', text: aiInput };
+    setChatMessages(prev => [...prev, userMessage]);
+    setAiInput("");
+    setIsAiResponding(true);
+    setTimeout(() => {
+      const aiResponse: ChatMessage = {
+        sender: 'ai',
+        text: aiChatType === 'nutrition' 
+            ? "For a child with MAM, increase protein intake by 20% using locally available lentils and ensure daily administration of micronutrient supplements as per protocol section 3.1."
+            : "Standard protocol for persistent fever >3 days involves immediate referral to the nearest PHC for malaria and typhoid screening. Do not delay."
+      };
+      setChatMessages(prev => [...prev, aiResponse]);
+      setIsAiResponding(false);
+    }, 1500);
+  };
+
+  const rows = useMemo(() => data ?? [], [data]);
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="govt-card-gradient p-6 rounded-lg govt-shadow-md border">
+        <div id="top" className="govt-card-gradient p-6 rounded-lg govt-shadow-md border">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-primary mb-2">
@@ -100,7 +257,7 @@ export default function SupervisorDashboard() {
 
         {/* Key Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="govt-shadow-lg">
+          <Card id="validation" className="govt-shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -112,7 +269,7 @@ export default function SupervisorDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="govt-shadow-lg">
+          <Card id="teachers" className="govt-shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -151,6 +308,50 @@ export default function SupervisorDashboard() {
 
         {/* Main Content */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {/* Assign to School */}
+          <Card className="govt-shadow-lg">
+            <CardHeader>
+              <CardTitle>Allocations (Assign to School)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoading && <div className="text-muted-foreground">Loading…</div>}
+              {isError && <div className="text-red-600">Failed to load</div>}
+              {!isLoading && !isError && (
+                <div className="overflow-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>District</TableHead>
+                        <TableHead>Amount</TableHead>
+                        <TableHead>Purpose</TableHead>
+                        <TableHead>Block</TableHead>
+                        <TableHead>School</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Action</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {rows.map((r) => (
+                        <TableRow key={r._id}>
+                          <TableCell>{r.districtName}</TableCell>
+                          <TableCell>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(r.amount)}</TableCell>
+                          <TableCell>{r.purpose || '-'}</TableCell>
+                          <TableCell className="capitalize">{r.blockName || '-'}</TableCell>
+                          <TableCell className="capitalize">{r.schoolName || '-'}</TableCell>
+                          <TableCell>{new Date(r.createdAt).toLocaleDateString('en-IN')}</TableCell>
+                          <TableCell>
+                            <Button size="sm" variant="outline" disabled={assignSchool.isPending} onClick={() => assignSchool.mutate({ id: r._id, schoolName: 'My School' })}>
+                              {r.schoolName ? 'Assigned' : 'Assign to My School'}
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
           {/* Child Validation Table */}
           <Card className="govt-shadow-lg">
             <CardHeader>
@@ -161,7 +362,8 @@ export default function SupervisorDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {childValidationData.map((child, index) => (
+                {/* Using childData state instead of static constant */}
+                {childData.map((child, index) => (
                   <div key={index} className="p-4 border rounded-lg govt-transition hover:govt-shadow-md">
                     <div className="flex items-center justify-between mb-3">
                       <div>
@@ -187,11 +389,34 @@ export default function SupervisorDashboard() {
                         <p className="font-semibold">{child.height} cm</p>
                       </div>
                     </div>
+                    {/* ACTION BUTTONS - Now Functional */}
                     <div className="mt-3 flex gap-2">
-                      <Button size="sm" variant="outline">Verify</Button>
-                      <Button size="sm" variant="destructive">Reject</Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="border-success/50 text-success hover:bg-success/10 hover:text-success"
+                        onClick={() => childActionMutation.mutate({ id: child.id, action: 'verify' })}
+                        disabled={child.status === 'verified' || childActionMutation.isPending}
+                      >
+                        Verify
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="destructive"
+                        onClick={() => childActionMutation.mutate({ id: child.id, action: 'reject' })}
+                        disabled={child.status === 'rejected' || childActionMutation.isPending}
+                      >
+                        Reject
+                      </Button>
                       {child.condition === 'SAM' || child.condition === 'Critical' ? (
-                        <Button size="sm" variant="govt">Refer to NRC</Button>
+                        <Button 
+                            size="sm" 
+                            variant="govt"
+                            onClick={() => childActionMutation.mutate({ id: child.id, action: 'refer' })}
+                            disabled={childActionMutation.isPending}
+                        >
+                            Refer to NRC
+                        </Button>
                       ) : null}
                     </div>
                   </div>
@@ -242,7 +467,7 @@ export default function SupervisorDashboard() {
 
         {/* Follow-up Tracker & Alerts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="govt-shadow-lg">
+          <Card id="followups" className="govt-shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Activity className="w-5 h-5 text-primary" />
@@ -268,7 +493,7 @@ export default function SupervisorDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="govt-shadow-lg">
+          <Card id="alerts" className="govt-shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-primary" />
@@ -288,7 +513,8 @@ export default function SupervisorDashboard() {
                 <p className="font-medium text-primary">Follow-up Due</p>
                 <p className="text-sm text-muted-foreground">3 children need post-NRC check-ups</p>
               </div>
-              <Button variant="outline" className="w-full">
+              {/* AI Health Guidelines Button */}
+              <Button variant="outline" className="w-full" onClick={() => openAiChat('health')}>
                 <MessageSquare className="w-4 h-4 mr-2" />
                 AI Health Guidelines
               </Button>
@@ -297,25 +523,83 @@ export default function SupervisorDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <Card className="govt-shadow-lg">
+        <Card id="quick-actions" className="govt-shadow-lg">
           <CardHeader>
             <CardTitle>Supervisor Actions</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button variant="govt" className="justify-start gap-3">
-                <FileText className="w-4 h-4" />
-                Generate Validation Report
+              {/* ACTION 1: Generate Validation Report */}
+              <Button 
+                variant="govt" 
+                className="justify-start gap-3"
+                onClick={() => generateReportMutation.mutate()}
+                disabled={generateReportMutation.isPending}
+              >
+                {generateReportMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
+                {generateReportMutation.isPending ? "Generating..." : "Generate Validation Report"}
               </Button>
-              <Button variant="accent" className="justify-start gap-3">
+
+              {/* ACTION 2: Process NRC Referrals (Navigate) */}
+              <Button 
+                variant="accent" 
+                className="justify-start gap-3"
+                onClick={() => navigate('/referrals')}
+              >
                 <HeartHandshake className="w-4 h-4" />
                 Process NRC Referrals
               </Button>
-              <Button variant="outline" className="justify-start gap-3">
+
+              {/* ACTION 3: AI Nutrition Support (Open Modal) */}
+              <Button 
+                variant="outline" 
+                className="justify-start gap-3"
+                onClick={() => openAiChat('nutrition')}
+              >
                 <MessageSquare className="w-4 h-4" />
                 AI Nutrition Support
               </Button>
             </div>
+
+            {/* AI Chat Dialog */}
+            <Dialog open={isAiModalOpen} onOpenChange={setIsAiModalOpen}>
+                <DialogContent className="max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>
+                        {aiChatType === 'nutrition' ? 'AI Nutrition Support' : 'AI Health Guidelines'}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <ScrollArea className="h-[400px] p-4 border rounded-md bg-muted/50">
+                    <div className="space-y-4">
+                      {chatMessages.map((msg, index) => (
+                        <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`p-3 rounded-lg max-w-[80%] ${msg.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-background border'}`}>
+                            <p className="text-sm">{msg.text}</p>
+                          </div>
+                        </div>
+                      ))}
+                      {isAiResponding && (
+                        <div className="flex justify-start">
+                          <div className="p-3 rounded-lg bg-background border">
+                            <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </ScrollArea>
+                  <DialogFooter className="flex-col sm:flex-row gap-2">
+                    <Input 
+                      placeholder="Type your question..."
+                      value={aiInput}
+                      onChange={(e) => setAiInput(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && !isAiResponding && handleSendAiMessage()}
+                      disabled={isAiResponding}
+                    />
+                    <Button onClick={handleSendAiMessage} disabled={isAiResponding}>Send</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
           </CardContent>
         </Card>
       </div>

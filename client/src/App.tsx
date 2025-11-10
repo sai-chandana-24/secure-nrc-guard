@@ -1,5 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+// import { Toaster as Sonner } from "@/components/ui/sonner"; // <-- This line can be removed too
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -19,6 +19,7 @@ import NotFound from "./pages/NotFound";
 import AlertsPage from "./pages/AlertsPage";
 import SupportPage from "./pages/SupportPage";
 import SearchPage from "./pages/SearchPage";
+import UserManagementPage from "./pages/UserManagementPage";
 
 const queryClient = new QueryClient();
 
@@ -77,7 +78,7 @@ function AppRoutes() {
       {/* Role-specific routes for navigation */}
       <Route path="/fund-allocation" element={getDashboardComponent()} />
       <Route path="/performance" element={getDashboardComponent()} />
-      <Route path="/users" element={getDashboardComponent()} />
+      <Route path="/users" element={<UserManagementPage />} />
       <Route path="/audit" element={getDashboardComponent()} />
       <Route path="/reports" element={getDashboardComponent()} />
       <Route path="/alerts" element={<AlertsPage />} />
@@ -113,7 +114,7 @@ const App = () => (
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
-          <Sonner />
+          {/* <Sonner />  <--- THIS LINE WAS REMOVED --- */}
           <AppRoutes />
         </TooltipProvider>
       </AuthProvider>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,54 +22,20 @@ import {
   Clock,
   XCircle 
 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import axiosInstance from '@/utils/axiosInstance';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 
-const fundAllocationData = [
-  {
-    fundId: "FND-2024-001",
-    district: "Mumbai",
-    amountSanctioned: 85000000,
-    date: "2024-01-15",
-    status: "Released",
-    disbursed: 85000000,
-    pending: 0
-  },
-  {
-    fundId: "FND-2024-002", 
-    district: "Pune",
-    amountSanctioned: 65000000,
-    date: "2024-01-20",
-    status: "Approved",
-    disbursed: 45000000,
-    pending: 20000000
-  },
-  {
-    fundId: "FND-2024-003",
-    district: "Nagpur",
-    amountSanctioned: 72000000,
-    date: "2024-01-22",
-    status: "Pending",
-    disbursed: 0,
-    pending: 72000000
-  },
-  {
-    fundId: "FND-2024-004",
-    district: "Nashik",
-    amountSanctioned: 58000000,
-    date: "2024-01-25",
-    status: "Released",
-    disbursed: 58000000,
-    pending: 0
-  },
-  {
-    fundId: "FND-2024-005",
-    district: "Aurangabad",
-    amountSanctioned: 63000000,
-    date: "2024-01-28",
-    status: "Approved",
-    disbursed: 30000000,
-    pending: 33000000
-  }
-];
+type Allocation = {
+  _id: string;
+  districtName: string;
+  amount: number;
+  purpose?: string;
+  status: 'approved' | 'transferred' | 'utilized' | 'audited';
+  createdAt: string;
+};
 
 const getStatusIcon = (status: string) => {
   switch (status) {
@@ -100,10 +66,42 @@ const getStatusVariant = (status: string) => {
 export function FundAllocationModule() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [open, setOpen] = useState(false);
+  const [districtName, setDistrictName] = useState('');
+  const [amount, setAmount] = useState('');
+  const [purpose, setPurpose] = useState('');
+  const { toast } = useToast();
 
-  const filteredData = fundAllocationData.filter(item => {
-    const matchesSearch = item.district.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.fundId.toLowerCase().includes(searchTerm.toLowerCase());
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['allocations'],
+    queryFn: async () => {
+      const res = await axiosInstance.get('/allocations');
+      return res.data.allocations as Allocation[];
+    }
+  });
+
+  const createAllocation = useMutation({
+    mutationFn: async (payload: { districtName: string; amount: number; purpose?: string }) => {
+      return axiosInstance.post('/allocations', payload);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['allocations'] });
+      setOpen(false);
+      setDistrictName('');
+      setAmount('');
+      setPurpose('');
+      toast({ title: 'Allocation created', description: 'Funds allocated to district.' });
+    },
+    onError: (err: any) => {
+      const status = err?.response?.status;
+      toast({ title: 'Failed to create allocation', description: status ? `HTTP ${status}` : 'Try again.', variant: 'destructive' });
+    }
+  });
+
+  const allocations = useMemo(() => data ?? [], [data]);
+  const filtered = allocations.filter(item => {
+    const matchesSearch = item.districtName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -129,10 +127,49 @@ export function FundAllocationModule() {
               Track and manage fund distribution across districts
             </p>
           </div>
-          <Button variant="govt" className="gap-2">
-            <Plus className="w-4 h-4" />
-            New Allocation
-          </Button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button variant="govt" className="gap-2">
+                <Plus className="w-4 h-4" />
+                New Allocation
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>New Fund Allocation</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>District</Label>
+                  <Input placeholder="Enter district name" value={districtName} onChange={(e) => setDistrictName(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Amount (INR)</Label>
+                  <Input type="number" placeholder="Amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Purpose (optional)</Label>
+                  <Input placeholder="Purpose" value={purpose} onChange={(e) => setPurpose(e.target.value)} />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+                <Button
+                  onClick={() => {
+                    const amt = Number(amount);
+                    if (!districtName || !amt) {
+                      toast({ title: 'District and amount required', variant: 'destructive' });
+                      return;
+                    }
+                    createAllocation.mutate({ districtName, amount: amt, purpose: purpose || undefined });
+                  }}
+                  disabled={createAllocation.isPending}
+                >
+                  Allocate
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
         
         {/* Filters */}
@@ -166,63 +203,54 @@ export function FundAllocationModule() {
       </CardHeader>
       
       <CardContent>
-        <div className="overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Fund ID</TableHead>
-                <TableHead>District</TableHead>
-                <TableHead>Amount Sanctioned</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Disbursed</TableHead>
-                <TableHead>Pending</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredData.map((item) => (
-                <TableRow key={item.fundId} className="hover:bg-muted/50">
-                  <TableCell className="font-medium text-primary">
-                    {item.fundId}
-                  </TableCell>
-                  <TableCell className="font-medium">{item.district}</TableCell>
-                  <TableCell className="font-semibold">
-                    {formatCurrency(item.amountSanctioned)}
-                  </TableCell>
-                  <TableCell>{new Date(item.date).toLocaleDateString('en-IN')}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(item.status)}
-                      <Badge variant={getStatusVariant(item.status)}>
-                        {item.status}
-                      </Badge>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-success font-medium">
-                    {formatCurrency(item.disbursed)}
-                  </TableCell>
-                  <TableCell className="text-warning font-medium">
-                    {formatCurrency(item.pending)}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="gap-1">
-                        <Eye className="w-3 h-3" />
-                        View
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-        
-        {filteredData.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">No fund allocations found</p>
-          </div>
+        {isLoading && <div className="text-muted-foreground">Loading allocations…</div>}
+        {isError && <div className="text-red-600">Failed to load allocations.</div>}
+        {!isLoading && !isError && (
+          <>
+            <div className="overflow-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>District</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Purpose</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((item) => (
+                    <TableRow key={item._id} className="hover:bg-muted/50">
+                      <TableCell className="font-medium">{item.districtName}</TableCell>
+                      <TableCell className="font-semibold">{formatCurrency(item.amount)}</TableCell>
+                      <TableCell>{item.purpose || '-'}</TableCell>
+                      <TableCell>{new Date(item.createdAt).toLocaleDateString('en-IN')}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {getStatusIcon(item.status)}
+                          <Badge variant={getStatusVariant(item.status)}>{item.status}</Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" className="gap-1">
+                            <Eye className="w-3 h-3" />
+                            View
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            {filtered.length === 0 && (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No fund allocations found</p>
+              </div>
+            )}
+          </>
         )}
       </CardContent>
     </Card>

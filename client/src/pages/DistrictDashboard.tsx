@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,8 +12,15 @@ import {
   TrendingUp,
   Building2,
   HeartHandshake,
-  FileBarChart
+  FileBarChart,
+  Loader2 // Added Loader2
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import axiosInstance from '@/utils/axiosInstance';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom'; // Added useNavigate
 
 const blockPerformanceData = [
   { name: 'Raipur Block', totalSAM: 125, nrcReferrals: 45, recoveryRate: 78, status: 'good' },
@@ -29,7 +36,22 @@ const fundUtilizationData = [
   { block: 'Korba Block', allocated: 1500000, used: 1350000, percentage: 90 },
 ];
 
+type AllocationRow = {
+  _id: string;
+  districtName: string;
+  amount: number;
+  purpose?: string;
+  status: 'approved' | 'transferred' | 'utilized' | 'audited';
+  createdAt: string;
+  received?: boolean; // Added received field to type definition if it's expected from backend
+};
+
 export default function DistrictDashboard() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const navigate = useNavigate(); // Initialize useNavigate
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'excellent':
@@ -43,30 +65,72 @@ export default function DistrictDashboard() {
     }
   };
 
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['allocations', user?.district || 'all'],
+    queryFn: async () => {
+      const params = user?.district ? { districtName: user.district } : undefined;
+      const res = await axiosInstance.get('/allocations', { params });
+      return res.data.allocations as AllocationRow[];
+    }
+  });
+
+  const markReceived = useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      await axiosInstance.patch(`/allocations/${id}/received`);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['allocations', user?.district || 'all'] });
+      toast({ title: 'Marked as received' });
+    },
+    onError: (err: any) => {
+      const code = err?.response?.status;
+      toast({ title: 'Failed to update', description: code ? `HTTP ${code}` : 'Try again', variant: 'destructive' });
+    }
+  });
+
+  // --- NEW MUTATION for Report Generation ---
+  const generateReportMutation = useMutation({
+    mutationFn: async () => {
+      // Simulate API call
+      return new Promise(resolve => setTimeout(resolve, 2500));
+    },
+    onMutate: () => {
+      toast({ title: 'Generating Report...', description: 'Compiling district data.' });
+    },
+    onSuccess: () => {
+      toast({ title: 'Report Ready', description: 'District report downloaded successfully.', variant: 'default' }); // Changed to 'default' as 'success' might not be defined in your theme
+    },
+    onError: () => {
+      toast({ title: 'Generation Failed', description: 'Could not generate report.', variant: 'destructive' });
+    }
+  });
+
+  const rows = useMemo(() => data ?? [], [data]);
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="govt-card-gradient p-6 rounded-lg govt-shadow-md border">
+        <div id="top" className="govt-card-gradient p-6 rounded-lg govt-shadow-md border">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-primary mb-2">
                 District Officer Dashboard
               </h1>
               <p className="text-muted-foreground text-lg">
-                Oversee all blocks in Raipur District - NRC Management System
+                Oversee all blocks in {user?.district || 'District'} - NRC Management System
               </p>
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-success/10 rounded-full">
               <MapPin className="w-5 h-5 text-success" />
-              <span className="text-sm font-semibold text-success">Raipur District</span>
+              <span className="text-sm font-semibold text-success">{user?.district || 'District'}</span>
             </div>
           </div>
         </div>
 
         {/* Key Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="govt-shadow-lg">
+          <Card id="block-performance" className="govt-shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -78,7 +142,7 @@ export default function DistrictDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="govt-shadow-lg">
+          <Card id="fund-utilization" className="govt-shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -185,7 +249,54 @@ export default function DistrictDashboard() {
 
         {/* Alerts & Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="govt-shadow-lg">
+          <Card id="district-allocations" className="govt-shadow-lg lg:col-span-2">
+            <CardHeader>
+              <CardTitle>District Allocations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoading && <div className="text-muted-foreground">Loading allocations…</div>}
+              {isError && <div className="text-red-600">Failed to load allocations</div>}
+              {!isLoading && !isError && (
+                <div className="overflow-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>District</TableHead>
+                        <TableHead>Amount</TableHead>
+                        <TableHead>Purpose</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {rows.map((r) => (
+                        <TableRow key={r._id}>
+                          <TableCell className="font-medium">{r.districtName}</TableCell>
+                          <TableCell>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(r.amount)}</TableCell>
+                          <TableCell>{r.purpose || '-'}</TableCell>
+                          <TableCell className="capitalize">{r.status}</TableCell>
+                          <TableCell>{new Date(r.createdAt).toLocaleDateString('en-IN')}</TableCell>
+                          <TableCell>
+                            <Button size="sm" variant="outline" disabled={markReceived.isPending || r.received} onClick={() => markReceived.mutate({ id: r._id })}>
+                              {r.received ? 'Received' : 'Mark Received'}
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {rows.length === 0 && (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center text-muted-foreground py-6">No allocations for this district</TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card id="alerts" className="govt-shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-primary" />
@@ -208,20 +319,42 @@ export default function DistrictDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="govt-shadow-lg">
+          <Card id="quick-actions" className="govt-shadow-lg">
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button variant="govt" className="w-full justify-start gap-3">
-                <FileBarChart className="w-4 h-4" />
-                Generate District Report
+              {/* --- ACTION 1: Generate Report --- */}
+              <Button 
+                variant="govt" 
+                className="w-full justify-start gap-3"
+                onClick={() => generateReportMutation.mutate()}
+                disabled={generateReportMutation.isPending}
+              >
+                {generateReportMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <FileBarChart className="w-4 h-4" />
+                )}
+                {generateReportMutation.isPending ? "Generating..." : "Generate District Report"}
               </Button>
-              <Button variant="accent" className="w-full justify-start gap-3">
+
+              {/* --- ACTION 2: Review Fund Requests (Navigate) --- */}
+              <Button 
+                variant="accent" 
+                className="w-full justify-start gap-3"
+                onClick={() => navigate('/fund-allocation')} // Navigate to fund allocation page
+              >
                 <DollarSign className="w-4 h-4" />
                 Review Fund Requests
               </Button>
-              <Button variant="outline" className="w-full justify-start gap-3">
+
+              {/* --- ACTION 3: Monitor NRC Admissions (Navigate) --- */}
+              <Button 
+                variant="outline" 
+                className="w-full justify-start gap-3"
+                onClick={() => navigate('/nrc')} // Navigate to NRC dashboard or admissions page
+              >
                 <Users className="w-4 h-4" />
                 Monitor NRC Admissions
               </Button>

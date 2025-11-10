@@ -12,7 +12,6 @@ export default defineConfig(({ mode }) => ({
         target: "http://localhost:3000", // ✅ backend port
         changeOrigin: true,
         secure: false,
-        // ❌ remove rewrite because backend already uses /api/*
       },
     },
   },

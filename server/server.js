@@ -4,6 +4,8 @@ import cors from 'cors';
 
 import connectDB from "./config/connectDB.js";
 import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import allocationRoutes from "./routes/allocationRoutes.js";
 
 dotenv.config();
 
@@ -14,6 +16,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/allocations", allocationRoutes);
 
 app.listen(PORT, () => {
     connectDB();

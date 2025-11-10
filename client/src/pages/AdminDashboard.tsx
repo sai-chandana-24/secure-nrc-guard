@@ -97,15 +97,13 @@ export default function AdminDashboard() {
     <DashboardLayout>
       <div className="space-y-8">
         {/* Welcome Section */}
-        <div className="govt-card-gradient p-6 rounded-lg govt-shadow-md border">
+        <div id="top" className="govt-card-gradient p-6 rounded-lg govt-shadow-md border">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-primary mb-2">
-                Chhattisgarh NRC E-Finance Dashboard
+                State Admininstrator
               </h1>
-              <p className="text-muted-foreground text-lg">
-                State-level management of Nutritional Rehabilitation Centers with secure blockchain transactions
-              </p>
+              
             </div>
             <div className="hidden lg:block">
               <div className="flex items-center gap-2 px-4 py-2 bg-success/10 rounded-full">
@@ -123,8 +121,12 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Left Column - Main Modules */}
           <div className="xl:col-span-2 space-y-6">
-            <FundAllocationModule />
-            <PerformanceDashboard />
+            <div id="fund-allocation">
+              <FundAllocationModule />
+            </div>
+            <div id="performance">
+              <PerformanceDashboard />
+            </div>
           </div>
 
           {/* Right Column - Sidebar */}

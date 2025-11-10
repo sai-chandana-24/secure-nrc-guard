@@ -16,8 +16,21 @@ import {
   AlertCircle,
   TrendingUp,
   Shield,
-  Send
+  Send,
+  Loader2
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useMutation } from '@tanstack/react-query';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const fundUtilizationData = [
   { district: 'Raipur', allocated: 25000000, used: 21750000, percentage: 87 },
@@ -33,7 +46,13 @@ const healthStatistics = [
   { metric: 'Overall Recovery Rate', value: '77%', change: '+3%' },
 ];
 
+type ChatMessage = {
+  sender: 'user' | 'ai';
+  text: string;
+};
+
 export default function PublicDashboard() {
+  const { toast } = useToast();
   const [complaint, setComplaint] = useState({
     name: '',
     email: '',
@@ -42,10 +61,78 @@ export default function PublicDashboard() {
     description: ''
   });
 
+  // AI Chat State
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
+    { sender: 'ai', text: 'Hello! I am the NRC Public Assistant. Ask me about fund allocation, how to report issues, or general program details.' }
+  ]);
+  const [aiInput, setAiInput] = useState("");
+  const [isAiResponding, setIsAiResponding] = useState(false);
+
+  // --- MUTATIONS ---
+
+  // 1. Submit Complaint Mutation
+  const submitComplaintMutation = useMutation({
+    mutationFn: async (newComplaint: typeof complaint) => {
+      // Simulate API call
+      return new Promise(resolve => setTimeout(resolve, 1500));
+    },
+    onMutate: () => {
+      toast({ title: 'Submitting...', description: 'Please wait while we register your complaint.' });
+    },
+    onSuccess: () => {
+      toast({ title: 'Complaint Registered', description: 'Your reference ID is: CMP-' + Math.floor(Math.random() * 10000), variant: 'default' });
+      setComplaint({ name: '', email: '', location: '', issue: '', description: '' }); // Reset form
+    },
+    onError: () => {
+      toast({ title: 'Submission Failed', description: 'Please try again later.', variant: 'destructive' });
+    }
+  });
+
+  // 2. Download Report Mutation
+  const downloadReportMutation = useMutation({
+    mutationFn: async (reportName: string) => {
+      // Simulate API call for file download
+      return new Promise(resolve => setTimeout(resolve, 2000));
+    },
+    onMutate: (variables) => {
+      toast({ title: 'Preparing Download...', description: `Generating ${variables}.` });
+    },
+    onSuccess: (_, variables) => {
+      toast({ title: 'Download Started', description: `${variables} is downloading now.`, variant: 'default' });
+    },
+    onError: () => {
+      toast({ title: 'Download Failed', variant: 'destructive' });
+    }
+  });
+
   const handleSubmitComplaint = () => {
-    // Submit complaint logic here
-    setComplaint({ name: '', email: '', location: '', issue: '', description: '' });
+    if (!complaint.name || !complaint.email || !complaint.description) {
+      toast({ title: "Missing Information", description: "Please fill in all required fields.", variant: "destructive" });
+      return;
+    }
+    submitComplaintMutation.mutate(complaint);
   };
+
+  const handleSendAiMessage = () => {
+    if (!aiInput.trim()) return;
+
+    const userMessage: ChatMessage = { sender: 'user', text: aiInput };
+    setChatMessages(prev => [...prev, userMessage]);
+    setAiInput("");
+    setIsAiResponding(true);
+
+    // Simulate AI response
+    setTimeout(() => {
+      const aiResponse: ChatMessage = {
+        sender: 'ai',
+        text: "I understand your query. Based on public data, fund utilization varies by district. You can view the detailed breakdown in the 'Fund Utilization' section above. For specific grievances, please use the complaint form."
+      };
+      setChatMessages(prev => [...prev, aiResponse]);
+      setIsAiResponding(false);
+    }, 1500);
+  };
+
 
   return (
     <DashboardLayout>
@@ -143,8 +230,17 @@ export default function PublicDashboard() {
                 <p className="text-sm text-muted-foreground mb-3">
                   Comprehensive report covering fund utilization, child health outcomes, and program effectiveness.
                 </p>
-                <Button variant="outline" className="w-full gap-2">
-                  <Download className="w-4 h-4" />
+                <Button 
+                  variant="outline" 
+                  className="w-full gap-2"
+                  onClick={() => downloadReportMutation.mutate("Monthly District Summary - Jan 2024")}
+                  disabled={downloadReportMutation.isPending}
+                >
+                   {downloadReportMutation.isPending && downloadReportMutation.variables === "Monthly District Summary - Jan 2024" ? (
+                     <Loader2 className="w-4 h-4 animate-spin" />
+                   ) : (
+                     <Download className="w-4 h-4" />
+                   )}
                   Download PDF Report
                 </Button>
               </div>
@@ -154,8 +250,17 @@ export default function PublicDashboard() {
                 <p className="text-sm text-muted-foreground mb-3">
                   Block-wise performance metrics, recovery rates, and resource allocation details.
                 </p>
-                <Button variant="outline" className="w-full gap-2">
-                  <Download className="w-4 h-4" />
+                <Button 
+                  variant="outline" 
+                  className="w-full gap-2"
+                  onClick={() => downloadReportMutation.mutate("Block Performance Analysis")}
+                  disabled={downloadReportMutation.isPending}
+                >
+                   {downloadReportMutation.isPending && downloadReportMutation.variables === "Block Performance Analysis" ? (
+                     <Loader2 className="w-4 h-4 animate-spin" />
+                   ) : (
+                     <Download className="w-4 h-4" />
+                   )}
                   Download Excel Report
                 </Button>
               </div>
@@ -165,8 +270,17 @@ export default function PublicDashboard() {
                 <p className="text-sm text-muted-foreground mb-3">
                   Complete annual overview of program impact, financial transparency, and success stories.
                 </p>
-                <Button variant="outline" className="w-full gap-2">
-                  <Download className="w-4 h-4" />
+                <Button 
+                  variant="outline" 
+                  className="w-full gap-2"
+                  onClick={() => downloadReportMutation.mutate("Annual Transparency Report 2023")}
+                  disabled={downloadReportMutation.isPending}
+                >
+                   {downloadReportMutation.isPending && downloadReportMutation.variables === "Annual Transparency Report 2023" ? (
+                     <Loader2 className="w-4 h-4 animate-spin" />
+                   ) : (
+                     <Download className="w-4 h-4" />
+                   )}
                   Download Annual Report
                 </Button>
               </div>
@@ -189,7 +303,7 @@ export default function PublicDashboard() {
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <div>
-                  <Label htmlFor="name">Full Name</Label>
+                  <Label htmlFor="name">Full Name *</Label>
                   <Input 
                     id="name"
                     value={complaint.name}
@@ -199,7 +313,7 @@ export default function PublicDashboard() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email">Email Address *</Label>
                   <Input 
                     id="email"
                     type="email"
@@ -230,7 +344,7 @@ export default function PublicDashboard() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">Description *</Label>
                   <Textarea 
                     id="description"
                     value={complaint.description}
@@ -240,15 +354,20 @@ export default function PublicDashboard() {
                   />
                 </div>
                 
-                <Button onClick={handleSubmitComplaint} variant="govt" className="w-full gap-2">
-                  <Send className="w-4 h-4" />
-                  Submit Complaint
+                <Button 
+                    onClick={handleSubmitComplaint} 
+                    variant="govt" 
+                    className="w-full gap-2"
+                    disabled={submitComplaintMutation.isPending}
+                >
+                  {submitComplaintMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  {submitComplaintMutation.isPending ? "Submitting..." : "Submit Complaint"}
                 </Button>
               </div>
 
               <div className="p-3 border-l-4 border-primary bg-primary/5 rounded">
                 <p className="font-medium text-primary">Track Your Complaint</p>
-                <p className="text-sm text-muted-foreground">Use complaint ID to track status and responses</p>
+                <p className="text-sm text-muted-foreground">Use your email ID to track status and responses in future visits.</p>
               </div>
             </CardContent>
           </Card>
@@ -309,10 +428,62 @@ export default function PublicDashboard() {
             </div>
             
             <div className="mt-6 pt-6 border-t">
-              <Button variant="outline" className="w-full gap-2">
-                <MessageSquare className="w-4 h-4" />
-                Chat with AI Assistant for Quick Information
-              </Button>
+               {/* AI Chat Bot Modal Trigger */}
+              <Dialog open={isAiModalOpen} onOpenChange={setIsAiModalOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="w-full gap-2">
+                    <MessageSquare className="w-4 h-4" />
+                    Chat with AI Assistant for Quick Information
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>Public AI Assistant</DialogTitle>
+                    <DialogDescription>
+                      Ask about program details, how to report issues, or general information.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <ScrollArea className="h-[400px] p-4 border rounded-md bg-muted/50">
+                    <div className="space-y-4">
+                      {chatMessages.map((msg, index) => (
+                        <div
+                          key={index}
+                          className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                        >
+                          <div
+                            className={`p-3 rounded-lg max-w-[80%] ${
+                              msg.sender === 'user' 
+                                ? 'bg-primary text-primary-foreground' 
+                                : 'bg-background border'
+                            }`}
+                          >
+                            <p className="text-sm">{msg.text}</p>
+                          </div>
+                        </div>
+                      ))}
+                      {isAiResponding && (
+                        <div className="flex justify-start">
+                          <div className="p-3 rounded-lg bg-background border">
+                            <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </ScrollArea>
+                  <DialogFooter className="flex-col sm:flex-row gap-2">
+                    <Input 
+                      placeholder="Type your question..."
+                      value={aiInput}
+                      onChange={(e) => setAiInput(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && !isAiResponding && handleSendAiMessage()}
+                      disabled={isAiResponding}
+                    />
+                    <Button onClick={handleSendAiMessage} disabled={isAiResponding}>
+                      Send
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </CardContent>
         </Card>
