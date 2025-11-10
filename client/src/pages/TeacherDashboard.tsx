@@ -56,7 +56,17 @@ type AllocationRow = {
 
 export default function TeacherDashboard() {
   // 1. State Management
-  const [children, setChildren] = useState(initialChildrenData);
+  // const [children, setChildren] = useState(initialChildrenData);
+  const { data: childrenData, isLoading: isChildrenLoading, isError: isChildrenError } = useQuery({
+   queryKey: ['children'],
+   queryFn: async () => {
+     const res = await axiosInstance.get('/children');
+     return res.data;
+   }
+ });
+
+ const children = childrenData || [];
+
   const [showAddForm, setShowAddForm] = useState(false);
   const [newChild, setNewChild] = useState({ name: '', age: '', weight: '', height: '', muac: '' });
   
@@ -130,7 +140,9 @@ export default function TeacherDashboard() {
     // Simulate API call
     try {
         // await axiosInstance.post('/children', childEntry);
-        setChildren(prev => [...prev, childEntry]);
+        // setChildren(prev => [...prev, childEntry]);
+        await axiosInstance.post('/children', childEntry);
+        queryClient.invalidateQueries({ queryKey: ['children'] });
         setShowAddForm(false);
         setNewChild({ name: '', age: '', weight: '', height: '', muac: '' });
         toast({ 
@@ -371,48 +383,108 @@ export default function TeacherDashboard() {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Children List with Refer Functionality */}
           <Card id="children" className="govt-shadow-lg flex flex-col h-[600px]">
-            <CardHeader className="shrink-0 border-b bg-muted/10">
-              <CardTitle className="flex items-center gap-2"><Users className="w-5 h-5 text-primary" /> Registered Children & Referrals</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 p-0">
-              <ScrollArea className="h-full p-6">
-                <div className="space-y-4">
-                  {children.map((child, index) => (
-                    <div key={index} className={`p-4 border rounded-lg bg-card ${child.status === 'SAM' ? 'border-destructive/50 bg-destructive/5' : ''}`}>
-                      <div className="flex items-center justify-between mb-3">
-                        <div>
-                          <h4 className="font-semibold text-lg flex items-center gap-2">
-                              {child.name}
-                              {child.referred && <Badge variant="secondary" className="text-xs"><CheckCircle2 className="w-3 h-3 mr-1 text-success"/> Referred</Badge>}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">ID: {child.id} | Age: {child.age}y</p>
-                        </div>
-                        {getStatusBadge(child.status)}
-                      </div>
-                      <div className="grid grid-cols-3 gap-4 text-sm bg-background/50 p-3 rounded-md">
-                        <div><span className="text-muted-foreground block">Weight</span><span className="font-semibold">{child.weight} kg</span></div>
-                        <div><span className="text-muted-foreground block">Height</span><span className="font-semibold">{child.height} cm</span></div>
-                        <div><span className="text-muted-foreground block">MUAC</span><span className={`font-semibold ${child.status === 'SAM' ? 'text-destructive' : ''}`}>{child.muac} cm</span></div>
-                      </div>
-                      <div className="mt-4 flex justify-between items-center">
-                        <span className="text-xs text-muted-foreground">Last Vist: {child.lastEntry}</span>
-                        {child.status === 'SAM' && !child.referred && (
-                          <Button size="sm" variant="destructive" onClick={() => handleRefer(child.id, child.name)} className="gap-1 shadow-sm">
-                             <Send className="w-3 h-3" /> Refer to NRC/Hospital
-                          </Button>
-                        )}
-                        {child.referred && (
-                            <Button size="sm" variant="outline" disabled className="gap-1 opacity-70">
-                             <Activity className="w-3 h-3" /> Referral Active
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+  <CardHeader className="shrink-0 border-b bg-muted/10">
+    <CardTitle className="flex items-center gap-2">
+      <Users className="w-5 h-5 text-primary" /> Registered Children & Referrals
+    </CardTitle>
+  </CardHeader>
+
+  <CardContent className="flex-1 p-0">
+    <ScrollArea className="h-full p-6">
+      <div className="space-y-4">
+        {isChildrenLoading ? (
+          <div className="flex justify-center items-center h-40 text-muted-foreground">
+            <Loader2 className="animate-spin mr-2" /> Loading children...
+          </div>
+        ) : isChildrenError ? (
+          <div className="text-center text-red-500 font-medium py-10">
+            Failed to load children data.
+          </div>
+        ) : children.length === 0 ? (
+          <div className="text-center text-muted-foreground py-10">
+            No children found. Please register a child.
+          </div>
+        ) : (
+          children.map((child, index) => (
+            <div
+              key={index}
+              className={`p-4 border rounded-lg bg-card ${
+                child.status === "SAM" ? "border-destructive/50 bg-destructive/5" : ""
+              }`}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h4 className="font-semibold text-lg flex items-center gap-2">
+                    {child.name}
+                    {child.referred && (
+                      <Badge variant="secondary" className="text-xs">
+                        <CheckCircle2 className="w-3 h-3 mr-1 text-success" /> Referred
+                      </Badge>
+                    )}
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    ID: {child.id} | Age: {child.age}y
+                  </p>
                 </div>
-              </ScrollArea>
-            </CardContent>
-          </Card>
+                {getStatusBadge(child.status)}
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 text-sm bg-background/50 p-3 rounded-md">
+                <div>
+                  <span className="text-muted-foreground block">Weight</span>
+                  <span className="font-semibold">{child.weight} kg</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block">Height</span>
+                  <span className="font-semibold">{child.height} cm</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block">MUAC</span>
+                  <span
+                    className={`font-semibold ${
+                      child.status === "SAM" ? "text-destructive" : ""
+                    }`}
+                  >
+                    {child.muac} cm
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-4 flex justify-between items-center">
+                <span className="text-xs text-muted-foreground">
+                  Last Visit: {child.lastEntry}
+                </span>
+
+                {child.status === "SAM" && !child.referred && (
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => handleRefer(child.id, child.name)}
+                    className="gap-1 shadow-sm"
+                  >
+                    <Send className="w-3 h-3" /> Refer to NRC/Hospital
+                  </Button>
+                )}
+
+                {child.referred && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled
+                    className="gap-1 opacity-70"
+                  >
+                    <Activity className="w-3 h-3" /> Referral Active
+                  </Button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </ScrollArea>
+  </CardContent>
+</Card>
+
 
           {/* Resource & Communication & AI */}
           <div className="space-y-6">

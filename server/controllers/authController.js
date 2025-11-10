@@ -81,4 +81,33 @@ const loginUser = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser };
+const getMe = async (req, res) => {
+  try {
+    // req.user is populated by the verifyToken middleware
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: 'Unauthorized: Token not verified' });
+    }
+
+    const user = await authModel.findById(req.user.id, { password: 0 }).lean();
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Prepare a clean user payload for the frontend
+    const userPayload = {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+      // NOTE: Include any other fields your frontend User interface expects here
+    };
+
+    res.status(200).json({ user: userPayload });
+
+  } catch (error) {
+    console.error("Error in getMe:", error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export { registerUser, loginUser, getMe };
