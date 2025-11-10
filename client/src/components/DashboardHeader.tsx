@@ -1,7 +1,6 @@
 import React from 'react';
-import { Bell, Search, Shield, Globe } from 'lucide-react';
+import { Bell, Shield, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { UserProfile } from '@/components/auth/UserProfile';

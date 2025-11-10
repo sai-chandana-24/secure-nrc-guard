@@ -133,7 +133,7 @@
     --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.35);
     --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.45), 0 2px 4px -2px hsl(0 0% 0% / 0.35);
     --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.45), 0 4px 6px -4px hsl(0 0% 0% / 0.35);
-    --shadow-glow: 0 0 0 1px hsl(215 30% 55% / 0.25), 0 4px 16px hsl(215 30% 55% / 0.3);
+    --shadow-glow: 0 0 0 1px hsl(20 85% 55% / 0.25), 0 4px 16px hsl(20 85% 55% / 0.3);
 
     /* Sidebar-specific colors (Soft Dark) */
     --sidebar-background: 215 20% 18%;
